@@ -1,0 +1,41 @@
+package net.stefangaertner.util;
+
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+
+public class FileUtils {
+	
+	public static List<String> read(String filename) {
+		
+		List<String> result = new ArrayList<>();
+		
+		// This will reference one line at a time
+				String line = null;
+
+				try {
+					InputStream is = FileUtils.class.getClassLoader().getResourceAsStream(filename);
+
+					// Always wrap FileReader in BufferedReader.
+					BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+
+					while ((line = bufferedReader.readLine()) != null) {
+						result.add(line);
+					}
+
+					// Always close files.
+					bufferedReader.close();
+				} catch (FileNotFoundException ex) {
+					System.out.println("Unable to open file '" + filename + "'");
+				} catch (IOException ex) {
+					System.out.println("Error reading file '" + filename + "'");
+				}
+
+		return result;
+	}
+
+}
