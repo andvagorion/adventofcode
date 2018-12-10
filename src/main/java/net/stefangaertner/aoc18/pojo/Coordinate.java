@@ -6,10 +6,23 @@ public class Coordinate {
 	public int x;
 	public int y;
 	
+	public int dx;
+	public int dy;
+	
 	public Coordinate(int id, int x, int y) {
 		this.id = id;
 		this.x = x;
 		this.y = y;
+	}
+	
+	public void setVelocity(int dx, int dy) {
+		this.dx = dx;
+		this.dy = dy;
+	}
+	
+	public void move() {
+		this.x += this.dx;
+		this.y += this.dy;
 	}
 
 	@Override
