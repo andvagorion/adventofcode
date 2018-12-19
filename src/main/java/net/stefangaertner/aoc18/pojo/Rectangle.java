@@ -26,4 +26,9 @@ public class Rectangle {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return "Rectangle [num=" + num + ", x=" + x + ", y=" + y + ", w=" + w + ", h=" + h + "]";
+	}
+
 }
