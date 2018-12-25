@@ -43,4 +43,8 @@ public class Nanobot {
 
 		return dx + dy + dz;
 	}
+
+	public int dist(Nanobot other) {
+		return dist(new Triple(other.x, other.y, other.z));
+	}
 }

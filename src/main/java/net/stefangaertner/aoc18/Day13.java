@@ -287,6 +287,7 @@ public class Day13 {
 		return y;
 	}
 
+	@SuppressWarnings("unused")
 	private static void printTrack(Track[][] tracks) {
 		for (int y = 0; y < tracks.length; y++) {
 			String s = "";

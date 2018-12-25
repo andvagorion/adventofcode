@@ -69,121 +69,10 @@ public class Battlefield {
 
 		// find path to closest spot
 		// next to enemy unit and move
-		move2(unit, units);
+		move(unit, units);
 	}
 
 	private void move(Unit unit, List<Unit> units) {
-
-		int min = Integer.MAX_VALUE;
-		Tile moveTo = null;
-		Unit chosen = null;
-
-		for (Unit other : units) {
-
-			if (other.equals(unit) || unit.type.equals(other.type)) {
-				continue;
-			}
-
-			// find enemy with shortest path
-
-			boolean[][] visited = initializeVisited(grid, unit);
-
-			Tile destination = other.tile;
-
-			// tree with root node
-			Node<Tile> root = new Node<>(null, unit.tile);
-
-			// use flood fill / BFS
-			Deque<Node<Tile>> q = new ArrayDeque<>();
-			q.addLast(root);
-
-			while (!q.isEmpty()) {
-
-				Node<Tile> node = q.removeFirst();
-
-				// Destination found;
-				if (node.data.equals(destination)) {
-					// trace back the steps
-					int c = 0;
-					Node<Tile> prev = null;
-					while (node.parent != null) {
-						prev = node;
-						node = node.parent;
-						c++;
-					}
-
-					if (c < min) {
-						min = c;
-						moveTo = prev.data;
-						chosen = other;
-					}
-				}
-
-				// moving up
-				if (node.data.y - 1 >= 0 && visited[node.data.y - 1][node.data.x] == false) {
-					Tile tile = grid[node.data.y - 1][node.data.x];
-					Node<Tile> child = new Node<>(node, tile);
-					node.children.add(child);
-					q.addLast(child);
-					visited[child.data.y][child.data.x] = true;
-				}
-
-				// moving left
-				if (node.data.x - 1 >= 0 && visited[node.data.y][node.data.x - 1] == false) {
-					Tile tile = grid[node.data.y][node.data.x - 1];
-					Node<Tile> child = new Node<>(node, tile);
-					node.children.add(child);
-					q.addLast(child);
-					visited[child.data.y][child.data.x] = true;
-				}
-
-				// moving right
-				if (node.data.x + 1 < grid[0].length && visited[node.data.y][node.data.x + 1] == false) {
-					Tile tile = grid[node.data.y][node.data.x + 1];
-					Node<Tile> child = new Node<>(node, tile);
-					node.children.add(child);
-					q.addLast(child);
-					visited[child.data.y][child.data.x] = true;
-				}
-
-				// moving down
-				if (node.data.y + 1 < grid.length && visited[node.data.y + 1][node.data.x] == false) {
-					Tile tile = grid[node.data.y + 1][node.data.x];
-					Node<Tile> child = new Node<>(node, tile);
-					node.children.add(child);
-					q.addLast(child);
-					visited[child.data.y][child.data.x] = true;
-				}
-			}
-		}
-
-		if (moveTo != null) {
-			if (debug) {
-				System.out.println(unit.type + " #" + unit.id + " at " + unit.tile.x + ", " + unit.tile.y + " moves to "
-						+ moveTo.x + ", " + moveTo.y);
-
-				System.out.println();
-				printCave(chosen, moveTo, 'x');
-				System.out.println();
-			}
-
-			Tile previousTile = unit.tile;
-			previousTile.unit = null;
-
-			moveTo.unit = unit;
-			unit.tile = moveTo;
-
-		} else {
-
-			if (debug) {
-				System.out.println(
-						unit.type + " #" + unit.id + " at " + unit.tile.x + ", " + unit.tile.y + " doesn't move.");
-			}
-
-		}
-	}
-
-	private void move2(Unit unit, List<Unit> units) {
 
 		List<Node<Tile>> nodes = new ArrayList<>();
 
@@ -292,6 +181,7 @@ public class Battlefield {
 		return closest;
 	}
 
+	@SuppressWarnings("unused")
 	private void printTargets(List<Node<Tile>> nodes, Node<Tile> chosen) {
 		String[][] printGrid = new String[grid.length][];
 
@@ -420,6 +310,7 @@ public class Battlefield {
 		return Math.abs(u1.tile.x - u2.tile.x) + Math.abs(u1.tile.y - u2.tile.y);
 	}
 
+	@SuppressWarnings("unused")
 	private static void printVisited(boolean[][] visited) {
 		for (int y = 0; y < visited.length; y++) {
 			for (int x = 0; x < visited[0].length; x++) {
@@ -432,6 +323,7 @@ public class Battlefield {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private static void printDistances(Tile start, boolean[][] visited, Map<Tile, Integer> dist) {
 		int[][] printGrid = new int[visited.length][visited[0].length];
 
@@ -457,6 +349,7 @@ public class Battlefield {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private void printCave(Unit chosen, Tile marked, char c) {
 		for (int y = 0; y < grid.length; y++) {
 			Tile[] row = grid[y];
