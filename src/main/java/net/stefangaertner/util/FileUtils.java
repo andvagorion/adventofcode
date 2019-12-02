@@ -9,31 +9,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FileUtils {
-	
+
 	public static List<String> read(String filename) {
-		
+
 		List<String> result = new ArrayList<>();
-		
+
 		// This will reference one line at a time
-				String line = null;
+		String line = null;
 
-				try {
-					InputStream is = FileUtils.class.getClassLoader().getResourceAsStream(filename);
+		try (InputStream is = FileUtils.class.getClassLoader().getResourceAsStream(filename);
+				BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(is, "UTF-8"))) {
 
-					// Always wrap FileReader in BufferedReader.
-					BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+			while ((line = bufferedReader.readLine()) != null) {
+				result.add(line);
+			}
 
-					while ((line = bufferedReader.readLine()) != null) {
-						result.add(line);
-					}
-
-					// Always close files.
-					bufferedReader.close();
-				} catch (FileNotFoundException ex) {
-					System.out.println("Unable to open file '" + filename + "'");
-				} catch (IOException ex) {
-					System.out.println("Error reading file '" + filename + "'");
-				}
+		} catch (FileNotFoundException ex) {
+			System.out.println("Unable to open file '" + filename + "'");
+		} catch (IOException ex) {
+			System.out.println("Error reading file '" + filename + "'");
+		}
 
 		return result;
 	}
