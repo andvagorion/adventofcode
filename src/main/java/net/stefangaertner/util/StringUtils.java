@@ -63,4 +63,18 @@ public class StringUtils {
 		}
 	}
 
+	public static void print2Darray(int[][] arr) {
+		if (arr == null)
+			return;
+		
+		for (int y = 0; y < arr.length; y++) {
+			int[] row = arr[y];
+			StringBuilder sb = new StringBuilder();
+			for (int x = 0; x < row.length; x++) {
+				sb.append(row[x]);
+			}
+			System.out.println(sb.toString());
+		}		
+	}
+
 }
