@@ -22,6 +22,13 @@ public class StringUtils {
 		return str;
 	}
 	
+	public static String appendWith(String str, int len, char c) {
+		while (str.length() < len) {
+			str = str + c;
+		}
+		return str;
+	}
+	
 	public static <T> void print2Darray(T[][] arr) {
 
 		for (int y = 0; y < arr.length; y++) {
