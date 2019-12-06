@@ -7,11 +7,11 @@ import java.util.Map;
 
 import net.stefangaertner.util.FileUtils;
 
-public class Day05 {
+public class Day06 {
 
 	public static void main(String[] strings) {
 
-		List<String> lines = FileUtils.read("aoc19/005-data1");
+		List<String> lines = FileUtils.read("aoc19/006-data1");
 
 		// child -> parent
 		Map<String, String> orbits = new HashMap<>();
