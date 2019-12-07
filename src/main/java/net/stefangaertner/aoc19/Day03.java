@@ -80,7 +80,7 @@ public class Day03 {
 			}
 		}
 		
-		System.out.println(total);
+		System.out.println("Part2: " + total);
 	}
 
 	public static void part1(List<String[]> input) {
@@ -101,7 +101,7 @@ public class Day03 {
 			}
 		}
 		
-		System.out.println(minDist);
+		System.out.println("Part 1: " + minDist);
 	}
 
 	public static Set<Pair> getIntersections(List<String[]> inputs) {

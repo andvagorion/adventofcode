@@ -33,7 +33,7 @@ public class Day06 {
 			count += determineParentCount(p, orbits);
 		}
 
-		System.out.println("Part 1 : " + count);
+		System.out.println("Part 1: " + count);
 	}
 
 	private static void part2(Map<String, String> orbits) {

@@ -64,9 +64,9 @@ public class Day02 {
 
 				if (result[0] == 19690720) {
 
-					System.out.println("Part 2: noun and verb are " + n0 + ", " + n1);
 					// What is 100 * noun + verb?
-					System.out.println("        100 * noun + verb = > " + (100 * n0 + n1));
+					System.out.println("Part 2: " + (100 * n0 + n1));
+					System.out.println("        (" + n0 + ", " + n1 + ")");
 					return;
 				}
 			}

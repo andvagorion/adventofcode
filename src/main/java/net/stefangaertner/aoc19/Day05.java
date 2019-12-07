@@ -15,14 +15,11 @@ public class Day05 {
 		List<String> lines = FileUtils.read("aoc19/005-data1");
 		String line = lines.get(0);
 
-		System.out.println("Part 1:");
-		Parser.create(line).input("1").run();
+		Parser p1 = Parser.create(line).input("1").run();
+		System.out.println("Part 1: " + p1.getLastOutput());
 		
-		// not 10915667
-		
-		System.out.println("");
-		System.out.println("Part 2:");
-		Parser.create(line).input("5").run();
+		Parser p2 = Parser.create(line).input("5").run();
+		System.out.println("Part 2: " + p2.getLastOutput());
 		
 	}
 

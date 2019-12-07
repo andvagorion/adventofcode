@@ -1,8 +1,11 @@
 package net.stefangaertner.aoc19.util;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
+import net.stefangaertner.util.ArrayUtils;
 import net.stefangaertner.util.StringUtils;
 
 public class Parser {
@@ -15,25 +18,32 @@ public class Parser {
 	private int counter = 0;
 	private boolean finished = false;
 
-	private int[] inputs = null;
+	private int[] inputs = new int[0];
 	private int inputCounter = 0;
 
+	private List<String> output = new ArrayList<>();
+	private boolean stopOnOutput = false;
+	private boolean halted = false;
+	
 	private boolean debugPrint = false;
 
 	public Parser(String input) {
 		this.code = Arrays.stream(input.split(",")).mapToInt(Integer::parseInt).toArray();
 	}
 
-	public void run() {
+	public Parser run() {
+		
+		this.halted = false;
 
-		while (!finished) {
+		while (!finished && !halted) {
 			step();
 		}
 
+		return this;
 	}
 
 	public Parser input(String input) {
-		this.inputs = Arrays.stream(input.split(",")).mapToInt(Integer::parseInt).toArray();
+		this.inputs = ArrayUtils.combine(inputs, Arrays.stream(input.split(",")).mapToInt(Integer::parseInt).toArray());
 		return this;
 	}
 
@@ -94,7 +104,13 @@ public class Parser {
 			int param1 = evalulateMode(counter + 1, mode1);
 			int out = code[param1];
 
-			if (out != 0) {
+			output.add(String.valueOf(out));
+			
+			if (this.stopOnOutput) {
+				this.halted = true;
+			}
+
+			if (this.debugPrint) {
 				System.out.println("OUT: " + out);
 			}
 
@@ -161,6 +177,9 @@ public class Parser {
 
 		if (counter == counterPrev) {
 			this.finished = true;
+		}
+
+		if (this.finished && this.debugPrint) {
 			System.out.println("stopping execution");
 		}
 
@@ -204,4 +223,20 @@ public class Parser {
 		return this;
 	}
 
+	public List<String> getOutput() {
+		return this.output;
+	}
+	
+	public Parser stopOnOutput() {
+		this.stopOnOutput = true;
+		return this;
+	}
+
+	public boolean isFinished() {
+		return this.finished;
+	}
+
+	public String getLastOutput() {
+		return this.output.get(this.output.size() - 1);
+	}
 }
