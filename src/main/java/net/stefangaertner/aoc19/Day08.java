@@ -48,8 +48,8 @@ public class Day08 {
 		int width = 25;
 		int height = 6;
 		
-		char black = '█';
-		char white = '░';
+		char black = ' ';
+		char white = '0';
 		
 		int[][][] decoded = decode(image, width, height);
 		

@@ -11,10 +11,10 @@ import net.stefangaertner.util.StringUtils;
 public class Parser {
 
 	private enum MODE {
-		POSITION, IMMEDIATE
+		POSITION, IMMEDIATE, RELATIVE
 	}
 
-	private int[] code = null;
+	private long[] memory = null;
 	private int counter = 0;
 	private boolean finished = false;
 
@@ -26,9 +26,11 @@ public class Parser {
 	private boolean halted = false;
 	
 	private boolean debugPrint = false;
+	
+	int relativeOffset = 0;
 
 	public Parser(String input) {
-		this.code = Arrays.stream(input.split(",")).mapToInt(Integer::parseInt).toArray();
+		this.memory = Arrays.stream(input.split(",")).mapToLong(Long::parseLong).toArray();
 	}
 
 	public Parser run() {
@@ -55,11 +57,12 @@ public class Parser {
 			System.out.println(this.counter);
 		}
 
-		String instruction = StringUtils.fillWith(String.valueOf(code[counter]), 5, '0');
+		String instruction = StringUtils.fillWith(String.valueOf(memory[counter]), 5, '0');
 
 		String opCode = instruction.substring(3);
 		MODE mode1 = getMode(instruction, 2);
 		MODE mode2 = getMode(instruction, 1);
+		MODE mode3 = getMode(instruction, 0);
 
 		if (debugPrint) {
 			System.out.println("op code: " + opCode);
@@ -68,11 +71,12 @@ public class Parser {
 		if ("01".equals(opCode)) {
 			// add values
 
-			int param1 = evalulateMode(code[counter + 1], mode1);
-			int param2 = evalulateMode(code[counter + 2], mode2);
-			int target = code[counter + 3];
-
-			code[target] = param1 + param2;
+			long param1 = evalulateParam(counter + 1, mode1);
+			long param2 = evalulateParam(counter + 2, mode2);
+			long target = evalulateTarget(counter + 3, mode3);
+			
+			checkMemory(target);
+			memory[(int) target] = param1 + param2;
 
 			counter += 4;
 		}
@@ -80,11 +84,12 @@ public class Parser {
 		if ("02".equals(opCode)) {
 			// multiply values
 
-			int param1 = evalulateMode(code[counter + 1], mode1);
-			int param2 = evalulateMode(code[counter + 2], mode2);
-			int target = code[counter + 3];
-
-			code[target] = param1 * param2;
+			long param1 = evalulateParam(counter + 1, mode1);
+			long param2 = evalulateParam(counter + 2, mode2);
+			long target = evalulateTarget(counter + 3, mode3);
+			
+			checkMemory(target);
+			memory[(int) target] = param1 * param2;
 
 			counter += 4;
 		}
@@ -94,15 +99,17 @@ public class Parser {
 		if ("03".equals(opCode)) {
 			int in = this.inputs[inputCounter++];
 
-			int param1 = evalulateMode(counter + 1, mode1);
-			code[param1] = in;
-
+			long target = evalulateTarget(counter + 1, mode1);
+						
+			checkMemory(target);
+			memory[(int) target] = in;
+			
 			counter += 2;
 		}
 
+		// output
 		if ("04".equals(opCode)) {
-			int param1 = evalulateMode(counter + 1, mode1);
-			int out = code[param1];
+			long out = evalulateParam(counter + 1, mode1);
 
 			output.add(String.valueOf(out));
 			
@@ -119,11 +126,11 @@ public class Parser {
 
 		// jump-if-true
 		if ("05".equals(opCode)) {
-			int param1 = evalulateMode(code[counter + 1], mode1);
-			int param2 = evalulateMode(code[counter + 2], mode2);
+			long param1 = evalulateParam(counter + 1, mode1);
+			long param2 = evalulateParam(counter + 2, mode2);
 
 			if (param1 != 0) {
-				counter = param2;
+				counter = (int) param2;
 			} else {
 				counter += 3;
 			}
@@ -131,11 +138,11 @@ public class Parser {
 
 		// jump-if-false
 		if ("06".equals(opCode)) {
-			int param1 = evalulateMode(code[counter + 1], mode1);
-			int param2 = evalulateMode(code[counter + 2], mode2);
+			long param1 = evalulateParam(counter + 1, mode1);
+			long param2 = evalulateParam(counter + 2, mode2);
 
 			if (param1 == 0) {
-				counter = param2;
+				counter = (int) param2;
 			} else {
 				counter += 3;
 			}
@@ -143,14 +150,16 @@ public class Parser {
 
 		// less than
 		if ("07".equals(opCode)) {
-			int param1 = evalulateMode(code[counter + 1], mode1);
-			int param2 = evalulateMode(code[counter + 2], mode2);
-			int target = code[counter + 3];
-
+			long param1 = evalulateParam(counter + 1, mode1);
+			long param2 = evalulateParam(counter + 2, mode2);
+			long target = evalulateTarget(counter + 3, mode3);
+			
+			checkMemory(target);
+			
 			if (param1 < param2) {
-				code[target] = 1;
+				memory[(int) target] = 1;
 			} else {
-				code[target] = 0;
+				memory[(int) target] = 0;
 			}
 
 			counter += 4;
@@ -158,17 +167,27 @@ public class Parser {
 
 		// equals
 		if ("08".equals(opCode)) {
-			int param1 = evalulateMode(code[counter + 1], mode1);
-			int param2 = evalulateMode(code[counter + 2], mode2);
-			int target = code[counter + 3];
+			long param1 = evalulateParam(counter + 1, mode1);
+			long param2 = evalulateParam(counter + 2, mode2);
+			long target = evalulateTarget(counter + 3, mode3);
+			
+			checkMemory(target);
 
 			if (param1 == param2) {
-				code[target] = 1;
+				memory[(int) target] = 1;
 			} else {
-				code[target] = 0;
+				memory[(int) target] = 0;
 			}
 
 			counter += 4;
+		}
+		
+		// change relative offset
+		if ("09".equals(opCode)) {
+			long param1 = evalulateParam(counter + 1, mode1);
+			relativeOffset += param1;
+			
+			counter += 2;
 		}
 
 		if ("99".equals(opCode)) {
@@ -187,13 +206,56 @@ public class Parser {
 			System.out.println(this.getState());
 		}
 	}
+	
+	private void checkMemory(long address) {
+		
+		int currentMemory = this.memory.length;
+		
+		if (address > currentMemory) {
+			
+			int times = (int) (address / currentMemory);
+			
+			addMemory(times);
+		}
+		
+	}
+	
+	private void addMemory(int times) {
+		
+		long[] newMem = new long[this.memory.length * times];
+		for (int i = 0; i < newMem.length; i++) {
+			newMem[i] = 0;
+		}
+		
+		this.memory = ArrayUtils.combine(this.memory, newMem);		
+	}
 
-	private int evalulateMode(int val, MODE mode) {
+	private long evalulateParam(long val, MODE mode) {
 		switch (mode) {
 		case IMMEDIATE:
-			return val;
+			return memory[(int) val];
 		case POSITION:
-			return code[val];
+			long refVal = memory[(int) val];
+			checkMemory(refVal);
+			return memory[(int) refVal];
+		case RELATIVE:
+			long refVal2 = memory[(int) val];
+			checkMemory(refVal2);
+			return memory[(int) refVal2 + relativeOffset];
+		default:
+			throw new IllegalStateException("Mode is not set correctly.");
+		}
+	}
+	
+	private long evalulateTarget(long val, MODE mode) {
+		switch (mode) {
+		case POSITION:
+			long refVal = memory[(int) val];
+			return refVal;
+		case RELATIVE:
+			long refVal2 = memory[(int) val] + relativeOffset;
+			return refVal2;
+		case IMMEDIATE:
 		default:
 			throw new IllegalStateException("Mode is not set correctly.");
 		}
@@ -205,13 +267,15 @@ public class Parser {
 			return MODE.POSITION;
 		case '1':
 			return MODE.IMMEDIATE;
+		case '2':
+			return MODE.RELATIVE;
 		default:
 			throw new IllegalStateException("Mode can only be 0 or 1.");
 		}
 	}
 
 	public String getState() {
-		return Arrays.stream(this.code).mapToObj(i -> "[" + String.valueOf(i) + "]").collect(Collectors.joining(", "));
+		return Arrays.stream(this.memory).mapToObj(i -> "[" + String.valueOf(i) + "]").collect(Collectors.joining(", "));
 	}
 
 	public static Parser create(String str) {
