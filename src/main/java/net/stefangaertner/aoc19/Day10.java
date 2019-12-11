@@ -2,6 +2,7 @@ package net.stefangaertner.aoc19;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Comparator;
 
 import net.stefangaertner.aoc18.pojo.Pair;
 import net.stefangaertner.util.FileUtils;
@@ -12,129 +13,11 @@ public class Day10 {
 	static Pair chosenPart2 = new Pair(27, 19);
 
 	public static void main(String[] strings) {
-
 		List<String> lines = FileUtils.read("aoc19/010-data");
-
-//		Pair center = new Pair(10, 10);
-//		System.out.println(getAngle(center, new Pair(0, 9)));
-//		System.out.println(getAngle(center, new Pair(5, 5)));
-//		System.out.println(getAngle(center, new Pair(10, 5)));
-//		System.out.println(getAngle(center, new Pair(15, 5)));
-//		System.out.println(getAngle(center, new Pair(15, 10)));
-//		System.out.println(getAngle(center, new Pair(15, 15)));
-//		System.out.println(getAngle(center, new Pair(10, 15)));
-//		System.out.println(getAngle(center, new Pair(5, 15)));
-
+		part1(lines);
 		part2(lines);
 	}
 	
-	private static void part2b(List<String> lines) {
-		
-		List<Pair> asteroids = getAsteroidsFromGrid(lines);
-		
-		// sort by angle, sort by distance ???
-		
-	}
-
-	private static void part2(List<String> lines) {
-
-		List<Pair> asteroids = getAsteroidsFromGrid(lines);
-
-		Pair chosen = new Pair(11, 13);
-
-		asteroids.remove(chosen);
-
-		List<Pair> vaporized = new ArrayList<>();
-
-		int boomCount = 0;
-		int count = 0;
-
-		double currentAngle = -90.001;
-		while (!asteroids.isEmpty() && count < 999) {
-			count++;
-			
-			Pair next = getNextTarget(asteroids, chosen, currentAngle);
-
-			if (next == null) {
-				currentAngle = -90.001;
-				continue;
-			}
-
-			boomCount++;
-			asteroids.remove(next);
-			vaporized.add(next);
-
-			currentAngle = getAngle(chosen, next);
-
-			System.out.println("#" + boomCount + " vaporized " + next + " at " + currentAngle);
-			
-		}
-		
-		// not 10,21 or 
-
-		System.out.println(vaporized.get(199));
-
-	}
-
-	private static int c = 0;
-
-	private static Pair getNextTarget(List<Pair> asteroids, Pair chosen, double currentAngle) {
-
-		Pair target = null;
-		double minAngle = Double.MAX_VALUE;
-		double minDist = Double.MAX_VALUE;
-
-		for (int i = 0; i < asteroids.size(); i++) {
-			Pair other = asteroids.get(i);
-			double otherAngle = getAngle(chosen, other);
-
-			if (otherAngle <= currentAngle) {
-				continue;
-			}
-
-			double angleDist = otherAngle - currentAngle;
-			double otherDist = getDist(chosen, other);
-
-			// #64 vaporized 19, 12 at -7.125016348901798
-			// currentAngle is -8.130102354155978
-
-			// suppose: next is 0.0
-
-			if (asteroids.size() == 111107) {
-				System.out.println(other);
-				System.out.println(otherAngle + ", " + currentAngle);
-				System.out.println(angleDist);
-				System.out.println(otherDist);
-				if (angleDist <= minAngle && otherDist < minDist) {
-					System.out.println("setting " + other);
-				}
-			}
-
-			if (angleDist < minAngle || (angleDist == minAngle && otherDist < minDist)) {
-				target = other;
-				minAngle = angleDist;
-				minDist = otherDist;
-			}
-		}
-
-		c++;
-
-		return target;
-	}
-
-	private static double getAngle(Pair pair, Pair other) {
-		double angle = Math.toDegrees(Math.atan2(other.y - pair.y, other.x - pair.x));
-		if (angle < -90) {
-			angle = 360 + angle;
-		}
-		
-		return angle;
-	}
-
-	private static double getDist(Pair pair, Pair other) {
-		return Math.sqrt((other.x - pair.x) * (other.x - pair.x) + (other.y - pair.y) * (other.y - pair.y));
-	}
-
 	private static void part1(List<String> lines) {
 
 		List<Pair> asteroids = getAsteroidsFromGrid(lines);
@@ -189,9 +72,89 @@ public class Day10 {
 
 		}
 
-		System.out.println(best);
-		System.out.println(max);
+		System.out.println("Part 1: " + max + " (" + best + ")");
 
+	}
+	
+	private static void part2(List<String> lines) {
+		
+		List<Pair> asteroids = getAsteroidsFromGrid(lines);
+		
+		Pair chosen = chosenPart2;
+		asteroids.remove(chosen);
+		
+		// sort by angle, sort by distance
+		Comparator<Pair> byAngle = Comparator.comparing(a -> getAngle(chosen, a));
+		Comparator<Pair> byDistance = Comparator.comparing(a -> getDist(chosen, a));
+		asteroids.sort(byAngle.thenComparing(byDistance));
+		
+		List<Pair> vaporized = new ArrayList<>();
+		int i = 0;
+		double minAngle = 0 - Math.PI / 2;
+		
+		// determine start
+		while(getAngle(chosen, asteroids.get(i)) < minAngle) {
+			i++;
+		}
+		
+		int c = 1;
+		double currentAngle = 0;
+		while (!asteroids.isEmpty()) {
+			
+			// only asteroids with the same angle remaining
+			if (onlySameAngle(asteroids, chosen, currentAngle)) {
+				// System.out.println("now");
+				break;
+			}
+			
+			if (i > asteroids.size() - 1) {
+				i = 0;
+			}
+			
+			Pair a = asteroids.get(i);
+			
+			double angle = getAngle(chosen, a);
+			if (angle == currentAngle) {
+				i++;
+				continue;
+			}
+			
+			currentAngle = angle;
+			
+			vaporized.add(a);
+			// System.out.println("#" + c + " " + a);
+			asteroids.remove(a);
+			
+			c++;
+		}
+		
+		// clear the rest
+		for (Pair a : asteroids) {
+			vaporized.add(a);
+			// System.out.println("#" + c + " " + a);
+			c++;
+		}
+		
+		Pair p = vaporized.get(199);
+		
+		System.out.println("Part 2: " + (p.x * 100 + p.y));
+	}
+	
+	private static boolean onlySameAngle(List<Pair> asteroids, Pair center, double currentAngle) {
+		for (Pair a : asteroids) {
+			if (getAngle(center, a) != currentAngle) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private static double getAngle(Pair pair, Pair other) {
+		return Math.atan2(other.y - pair.y, other.x - pair.x);
+	}
+
+	private static double getDist(Pair pair, Pair other) {
+		return Math.sqrt((other.x - pair.x) * (other.x - pair.x) + (other.y - pair.y) * (other.y - pair.y));
 	}
 
 	private static List<Pair> getAsteroidsFromGrid(List<String> lines) {
@@ -234,10 +197,5 @@ public class Day10 {
 
 		StringUtils.print2Darray(grid);
 	}
-
-	public static void part2(String code) {
-
-		System.out.println("Part 2: ");
-	}
-
+	
 }
