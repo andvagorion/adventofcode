@@ -97,6 +97,10 @@ public class Parser {
 		// takes a single integer as input and saves it to the position given by its
 		// only parameter
 		if ("03".equals(opCode)) {
+			if (inputCounter > this.inputs.length - 1) {
+				throw new IllegalStateException("input value #" + (inputCounter + 1) + " was requested, but no input value supplied.");
+			}
+			
 			int in = this.inputs[inputCounter++];
 
 			long target = evalulateTarget(counter + 1, mode1);
@@ -301,6 +305,9 @@ public class Parser {
 	}
 
 	public String getLastOutput() {
+		if (this.output.isEmpty()) {
+			return "no output yet";
+		}
 		return this.output.get(this.output.size() - 1);
 	}
 }

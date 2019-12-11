@@ -13,6 +13,10 @@ public class Pair {
 	public String toString() {
 		return this.x + ", " + this.y;
 	}
+	
+	public static Pair of(int x, int y) {
+		return new Pair(x, y);
+	}
 
 	@Override
 	public int hashCode() {
