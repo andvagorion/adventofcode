@@ -18,7 +18,16 @@ public class Day12 {
 		return moons;
 	}
 	
-	private static List<Moon> getExample() {
+	private static List<Moon> getExample1() {
+		List<Moon> moons = new ArrayList<>();
+		moons.add(new Moon(-1, 0, 2));
+		moons.add(new Moon(2,-10,-7));
+		moons.add(new Moon(4, -8, 8));
+		moons.add(new Moon(3, 5, -1));
+		return moons;
+	}
+	
+	private static List<Moon> getExample2() {
 		List<Moon> moons = new ArrayList<>();
 		moons.add(new Moon(-8, -10, 0));
 		moons.add(new Moon(5, 5, 10));
@@ -29,7 +38,7 @@ public class Day12 {
 
 	public static void main(String[] strings) {
 		part1(getMoons());
-		part2(getExample());
+		part2(getExample1());
 	}
 
 	private static void part2(List<Moon> moons) {
