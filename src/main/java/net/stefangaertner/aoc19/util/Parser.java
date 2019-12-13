@@ -24,17 +24,22 @@ public class Parser {
 	private List<String> output = new ArrayList<>();
 	private boolean stopOnOutput = false;
 	private boolean halted = false;
-	
+
+	private boolean stopOnInput = false;
+	private boolean needsInput = false;
+
 	private boolean debugPrint = false;
-	
+
 	int relativeOffset = 0;
+
+	private long stepCount = 0;
 
 	public Parser(String input) {
 		this.memory = Arrays.stream(input.split(",")).mapToLong(Long::parseLong).toArray();
 	}
 
 	public Parser run() {
-		
+
 		this.halted = false;
 
 		while (!finished && !halted) {
@@ -46,10 +51,13 @@ public class Parser {
 
 	public Parser input(String input) {
 		this.inputs = ArrayUtils.combine(inputs, Arrays.stream(input.split(",")).mapToInt(Integer::parseInt).toArray());
+		this.needsInput = false;
 		return this;
 	}
 
 	private void step() {
+
+		stepCount++;
 
 		int counterPrev = counter;
 
@@ -74,7 +82,7 @@ public class Parser {
 			long param1 = evalulateParam(counter + 1, mode1);
 			long param2 = evalulateParam(counter + 2, mode2);
 			long target = evalulateTarget(counter + 3, mode3);
-			
+
 			checkMemory(target);
 			memory[(int) target] = param1 + param2;
 
@@ -87,7 +95,7 @@ public class Parser {
 			long param1 = evalulateParam(counter + 1, mode1);
 			long param2 = evalulateParam(counter + 2, mode2);
 			long target = evalulateTarget(counter + 3, mode3);
-			
+
 			checkMemory(target);
 			memory[(int) target] = param1 * param2;
 
@@ -97,17 +105,26 @@ public class Parser {
 		// takes a single integer as input and saves it to the position given by its
 		// only parameter
 		if ("03".equals(opCode)) {
+
 			if (inputCounter > this.inputs.length - 1) {
-				throw new IllegalStateException("input value #" + (inputCounter + 1) + " was requested, but no input value supplied.");
+				if (this.stopOnInput) {
+					this.needsInput = true;
+					this.halted = true;
+					return;
+				}
+
+				throw new IllegalStateException(
+						"input value #" + (inputCounter + 1) + " was requested, but no input value supplied.");
 			}
-			
+			this.needsInput = false;
+
 			int in = this.inputs[inputCounter++];
 
 			long target = evalulateTarget(counter + 1, mode1);
-						
+
 			checkMemory(target);
 			memory[(int) target] = in;
-			
+
 			counter += 2;
 		}
 
@@ -116,7 +133,7 @@ public class Parser {
 			long out = evalulateParam(counter + 1, mode1);
 
 			output.add(String.valueOf(out));
-			
+
 			if (this.stopOnOutput) {
 				this.halted = true;
 			}
@@ -157,9 +174,9 @@ public class Parser {
 			long param1 = evalulateParam(counter + 1, mode1);
 			long param2 = evalulateParam(counter + 2, mode2);
 			long target = evalulateTarget(counter + 3, mode3);
-			
+
 			checkMemory(target);
-			
+
 			if (param1 < param2) {
 				memory[(int) target] = 1;
 			} else {
@@ -174,7 +191,7 @@ public class Parser {
 			long param1 = evalulateParam(counter + 1, mode1);
 			long param2 = evalulateParam(counter + 2, mode2);
 			long target = evalulateTarget(counter + 3, mode3);
-			
+
 			checkMemory(target);
 
 			if (param1 == param2) {
@@ -185,12 +202,12 @@ public class Parser {
 
 			counter += 4;
 		}
-		
+
 		// change relative offset
 		if ("09".equals(opCode)) {
 			long param1 = evalulateParam(counter + 1, mode1);
 			relativeOffset += param1;
-			
+
 			counter += 2;
 		}
 
@@ -210,28 +227,28 @@ public class Parser {
 			System.out.println(this.getState());
 		}
 	}
-	
+
 	private void checkMemory(long address) {
-		
+
 		int currentMemory = this.memory.length;
-		
+
 		if (address > currentMemory) {
-			
+
 			int times = (int) (address / currentMemory);
-			
+
 			addMemory(times);
 		}
-		
+
 	}
-	
+
 	private void addMemory(int times) {
-		
+
 		long[] newMem = new long[this.memory.length * times];
 		for (int i = 0; i < newMem.length; i++) {
 			newMem[i] = 0;
 		}
-		
-		this.memory = ArrayUtils.combine(this.memory, newMem);		
+
+		this.memory = ArrayUtils.combine(this.memory, newMem);
 	}
 
 	private long evalulateParam(long val, MODE mode) {
@@ -250,7 +267,7 @@ public class Parser {
 			throw new IllegalStateException("Mode is not set correctly.");
 		}
 	}
-	
+
 	private long evalulateTarget(long val, MODE mode) {
 		switch (mode) {
 		case POSITION:
@@ -279,7 +296,8 @@ public class Parser {
 	}
 
 	public String getState() {
-		return Arrays.stream(this.memory).mapToObj(i -> "[" + String.valueOf(i) + "]").collect(Collectors.joining(", "));
+		return Arrays.stream(this.memory).mapToObj(i -> "[" + String.valueOf(i) + "]")
+				.collect(Collectors.joining(", "));
 	}
 
 	public static Parser create(String str) {
@@ -294,10 +312,19 @@ public class Parser {
 	public List<String> getOutput() {
 		return this.output;
 	}
-	
+
 	public Parser stopOnOutput() {
 		this.stopOnOutput = true;
 		return this;
+	}
+
+	public Parser stopOnInput() {
+		this.stopOnInput = true;
+		return this;
+	}
+
+	public boolean needsInput() {
+		return this.needsInput;
 	}
 
 	public boolean isFinished() {
@@ -309,5 +336,18 @@ public class Parser {
 			return "no output yet";
 		}
 		return this.output.get(this.output.size() - 1);
+	}
+
+	public void setMemoryAddress(int i, int j) {
+		checkMemory(i);
+		this.memory[i] = j;
+	}
+
+	public long getStepCount() {
+		return this.stepCount;
+	}
+
+	public boolean isHalted() {
+		return this.halted;
 	}
 }

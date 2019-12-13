@@ -38,7 +38,7 @@ public class Day12 {
 
 	public static void main(String[] strings) {
 		part1(getMoons());
-		part2(getExample1());
+		// part2(getExample1());
 	}
 
 	private static void part2(List<Moon> moons) {
