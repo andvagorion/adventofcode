@@ -30,9 +30,12 @@ public class Parser {
 
 	private boolean debugPrint = false;
 
-	int relativeOffset = 0;
+	private int relativeOffset = 0;
 
 	private long stepCount = 0;
+	
+	private Parser() {
+	}
 
 	public Parser(String input) {
 		this.memory = Arrays.stream(input.split(",")).mapToLong(Long::parseLong).toArray();
@@ -349,5 +352,25 @@ public class Parser {
 
 	public boolean isHalted() {
 		return this.halted;
+	}
+
+	public Parser copy() {
+		Parser p = new Parser();
+		p.counter = this.counter;
+		p.debugPrint = this.debugPrint;
+		p.finished = this.finished;
+		p.halted = this.halted;
+		p.inputCounter = this.inputCounter;
+		p.inputs = new int[this.inputs.length];
+		System.arraycopy(this.inputs, 0, p.inputs, 0, this.inputs.length );
+		p.memory = new long[this.memory.length];
+		System.arraycopy(this.memory, 0, p.memory, 0, this.memory.length );
+		p.needsInput = this.needsInput;
+		p.output = new ArrayList<>(this.output);
+		p.relativeOffset = this.relativeOffset;
+		p.stepCount = this.stepCount;
+		p.stopOnInput = this.stopOnInput;
+		p.stopOnOutput = this.stopOnOutput;
+		return p;
 	}
 }

@@ -39,4 +39,8 @@ public class Pair {
 		Pair other = (Pair) obj;
 		return this.x == other.x && this.y == other.y;
 	}
+
+	public Pair copy() {
+		return new Pair(this.x, this.y);
+	}
 }
