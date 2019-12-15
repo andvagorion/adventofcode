@@ -1,184 +1,190 @@
 package net.stefangaertner.aoc19;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.Set;
+import java.util.Stack;
+import java.util.stream.Collectors;
 
 import net.stefangaertner.aoc18.pojo.Pair;
 import net.stefangaertner.aoc19.util.Parser;
 import net.stefangaertner.util.FileUtils;
 import net.stefangaertner.util.PairUtils;
 import net.stefangaertner.util.StringUtils;
-import net.stefangaertner.util.TileType;
 
 public class Day15 {
 
 	public static void main(String[] strings) throws IOException {
 
-		explore();
+		Map<Pair, Character> map = explore();
+
+		// PART 1: manually counted
+
+		// Map<Pair, Character> map = readExample();
+		// print(map);
+
+		int i = 0;
+
+		while (true) {
+			i++;
+
+			List<Pair> empty = map.entrySet().stream().filter(m -> m.getValue() == 'T').map(Entry::getKey)
+					.collect(Collectors.toList());
+
+			for (Pair e : empty) {
+				fill(map, e, 'T');
+			}
+
+			boolean anyEmpty = map.values().stream().anyMatch(c -> c == '.');
+			if (!anyEmpty) {
+				break;
+			}
+
+			// print(map);
+		}
+
+		// print(map);
+
+		System.out.println("Part 2: " + i);
+	}
+
+	private static void fill(Map<Pair, Character> map, Pair pos, char c) {
+
+		for (int i = 1; i < 5; i++) {
+			Pair delta = toPair(i);
+			Pair target = Pair.of(pos.x + delta.x, pos.y + delta.y);
+
+			if (map.containsKey(target) && map.get(target) == '.') {
+				map.put(target, c);
+			}
+		}
 
 	}
 
-	private static void part1() {
+	private static Map<Pair, Character> explore() {
 
 		List<String> lines = FileUtils.read("aoc19/015-data");
 		String code = lines.get(0);
 
-		Parser p = Parser.create(code).stopOnInput();
-
 		Map<Pair, Character> map = new HashMap<>();
+		Parser p = Parser.create(code).stopOnInput();
 
 		Pair pos = Pair.of(0, 0);
 		map.put(pos, 's');
 
-		int c = 0;
+		Set<Pair> visited = new HashSet<>();
+		visited.add(pos);
 
-		ThreadLocalRandom rnd = ThreadLocalRandom.current();
+		Stack<Parser> states = new Stack<>();
+		Stack<Pair> positions = new Stack<>();
 
-		boolean stopped = false;
+		Pair prevPos = Pair.of(-1, -1);
 
-		while (c < 1000000 && !stopped) {
-			c++;
+		int steps = 0;
+		while (true) {
+			steps++;
+			prevPos = pos.copy();
 
-			int dir = rnd.nextInt(1, 5);
-
-			Pair mov = null;
-
-			if (dir == 1) {
-				// north
-				mov = Pair.of(0, -1);
-			} else if (dir == 2) {
-				// south
-				mov = Pair.of(0, 1);
-			} else if (dir == 3) {
-				// west
-				mov = Pair.of(-1, 0);
-			} else if (dir == 4) {
-				// east
-				mov = Pair.of(1, 0);
+			// reveal the surrounding map
+			for (int i = 1; i < 5; i++) {
+				peek(p, map, pos, i);
 			}
 
-			p.input(String.valueOf(dir));
-			p.run();
+			// find possible moves
+			List<Pair> moves = findMoves(map, visited, pos);
 
-			String out = p.getLastOutput();
+			// no more moves at current position
+			if (moves.isEmpty()) {
 
-			Pair x = null;
-			char x1 = ' ';
-
-			if ("0".equals(out)) {
-				// wall
-				x = Pair.of(pos.x + mov.x, pos.y + mov.y);
-				x1 = '#';
-			} else if ("1".equals(out)) {
-				// moved
-				pos = Pair.of(pos.x + mov.x, pos.y + mov.y);
-
-				x = pos;
-				x1 = '.';
-
-			} else if ("2".equals(out)) {
-				// moved, found tank
-				pos = Pair.of(pos.x + mov.x, pos.y + mov.y);
-
-				x = pos;
-				x1 = 'T';
-
-				stopped = true;
-			}
-
-			if (!map.containsKey(x)) {
-				map.put(x, x1);
-			}
-		}
-
-		print(map);
-
-	}
-
-	static ThreadLocalRandom rnd = ThreadLocalRandom.current();
-
-	private static void explore() {
-
-		Map<Pair, Character> map = new HashMap<>();
-
-		for (int t = 0; t < 10; t++) {
-
-			String first = "U,L,U,L,D,R,U,D,L,U,L,D,L,D,R,U,R,D," + "R,D,L,D,R,D,L,D,R,U,R,U," + "R,D,R,"
-					+ "U,R,D,R,D,L,D,R,D,L,D,R,D,L,D";
-
-			List<String> lines = FileUtils.read("aoc19/015-data");
-			String code = lines.get(0);
-
-			Parser p = Parser.create(code).stopOnInput();
-
-			Pair pos = Pair.of(0, 0);
-			map.put(pos, 's');
-
-			pos = preparedWalk(p, map, pos, first);
-
-			int i = 0;
-			int max = 100000;
-
-			while (i < max) {
-				i++;
-
-				for (int j = 0; j < 10; j++) {
-					if (i == max / 10 * j) {
-						System.out.println((j * 10) + "%");
-					}
+				// check if we're done
+				if (positions.isEmpty()) {
+					break;
 				}
 
-				int dir = rnd.nextInt(1, 5);
+				// backtrack to last possible move
+				p = states.pop();
+				pos = positions.pop();
 
-				pos = move(p, pos, dir, map);
-
-			}
-
-		}
-
-		print(map);
-
-	}
-
-	private static Pair preparedWalk(Parser p, Map<Pair, Character> map, Pair pos, String first) {
-		for (int j = 0; j < first.length(); j++) {
-
-			int dir = -1;
-
-			char in = first.charAt(j);
-			switch (in) {
-			case 'U':
-				dir = 1;
-				break;
-			case 'D':
-				dir = 2;
-				break;
-			case 'L':
-				dir = 3;
-				break;
-			case 'R':
-				dir = 4;
-				break;
-			case ',':
 				continue;
 			}
 
-			for (int k = 0; k < 10; k++) {
-				pos = move(p, pos, dir, map);
+			// printState(map, pos, moves, positions);
+
+			if (moves.size() > 1) {
+
+				states.push(p.copy());
+				positions.push(pos.copy());
+
+			}
+
+			// move to next tile
+			Pair target = moves.get(0);
+			pos = move(p, map, pos, target);
+			visited.add(pos);
+
+			// break condition for errors
+			if (prevPos != null && prevPos.equals(pos)) {
+				break;
 			}
 
 		}
 
-		return pos;
+		return map;
+
 	}
 
-	private static Pair move(Parser p, Pair pos, int dir, Map<Pair, Character> map) {
+	private static Pair move(Parser p, Map<Pair, Character> map, Pair pos, Pair target) {
+		int dir = toDir(Pair.of(target.x - pos.x, target.y - pos.y));
+		return move(p, map, pos, dir);
+	}
+
+	private static List<Pair> findMoves(Map<Pair, Character> map, Set<Pair> visited, Pair pos) {
+		List<Pair> moves = new ArrayList<>();
+		for (int i = 1; i < 5; i++) {
+			Pair delta = toPair(i);
+			Pair target = Pair.of(pos.x + delta.x, pos.y + delta.y);
+			if (map.containsKey(target) && map.get(target) == '.') {
+				moves.add(target);
+			}
+		}
+		moves = moves.stream().filter(m -> !visited.contains(m)).collect(Collectors.toList());
+		return moves;
+	}
+
+	private static void peek(Parser p, Map<Pair, Character> map, Pair pos, int dir) {
+
+		Pair prev = Pair.of(pos.x, pos.y);
+		Pair target = move(p, map, pos, dir);
+
+		if (!prev.equals(target)) {
+			// go back, we're only peeking
+
+			Pair delta = Pair.of(target.x - prev.x, target.y - prev.y);
+			int dir2 = reverse(toDir(delta));
+			move(p, map, target, dir2);
+		}
+	}
+
+	private static int reverse(int dir) {
+		if (dir == 1) {
+			return 2;
+		} else if (dir == 2) {
+			return 1;
+		} else if (dir == 3) {
+			return 4;
+		} else if (dir == 4) {
+			return 3;
+		}
+
+		return -1;
+	}
+
+	private static Pair move(Parser p, Map<Pair, Character> map, Pair pos, int dir) {
 
 		Pair mov = toPair(dir);
 		Pair target = Pair.of(pos.x + mov.x, pos.y + mov.y);
@@ -230,7 +236,27 @@ public class Day15 {
 		return mov;
 	}
 
-	private static void print(Map<Pair, Character> map) {
+	private static int toDir(Pair pair) {
+
+		if (Pair.of(0, -1).equals(pair)) {
+			// north
+			return 1;
+		} else if (Pair.of(0, 1).equals(pair)) {
+			// south
+			return 2;
+		} else if (Pair.of(-1, 0).equals(pair)) {
+			// west
+			return 3;
+		} else if (Pair.of(1, 0).equals(pair)) {
+			// east
+			return 4;
+		}
+
+		return -1;
+
+	}
+
+	private static char[][] getGrid(Map<Pair, Character> map) {
 		Pair[] minMax = PairUtils.getMinAndMax(map.keySet());
 		Pair min = minMax[0];
 		Pair max = minMax[1];
@@ -240,24 +266,71 @@ public class Day15 {
 		int sizeY = offsetY + max.y + 1;
 		int sizeX = offsetX + max.x + 1;
 
-		char[][] image = new char[sizeY][];
+		char[][] grid = new char[sizeY][];
 		for (int y = 0; y < sizeY; y++) {
-			image[y] = new char[sizeX];
+			grid[y] = new char[sizeX];
 			for (int x = 0; x < sizeX; x++) {
-				image[y][x] = ' ';
+				grid[y][x] = ' ';
 			}
 		}
 
 		for (Entry<Pair, Character> e : map.entrySet()) {
 			Pair pos1 = e.getKey();
-			image[pos1.y + offsetY][pos1.x + offsetX] = e.getValue();
+			grid[pos1.y + offsetY][pos1.x + offsetX] = e.getValue();
 		}
 
-		StringUtils.print2Darray(image);
+		return grid;
 	}
 
-	private static void part2(boolean manualInput, boolean debugPrint) throws IOException {
+	private static void print(Map<Pair, Character> map) {
+		char[][] grid = getGrid(map);
+		StringUtils.print2Darray(grid);
+	}
 
+	private static void printState(Map<Pair, Character> map, Pair pos, List<Pair> moves, Stack<Pair> positions) {
+		if (!moves.isEmpty()) {
+			Map<Pair, Character> printMap = new HashMap<>(map);
+			printMap.put(pos, 'x');
+			for (Pair m : moves) {
+				printMap.put(m, '!');
+			}
+
+			if (!positions.isEmpty()) {
+				printMap.put(positions.peek(), '?');
+			}
+
+			StringUtils.print2Darray(getGrid(printMap));
+			System.out.println(" ");
+
+		}
+	}
+
+	private static Map<Pair, Character> readExample() {
+
+		Map<Pair, Character> map = new HashMap<>();
+
+		List<String> lines = FileUtils.read("aoc19/015-example");
+
+		for (int y = 0; y < lines.size(); y++) {
+
+			String line = lines.get(y);
+
+			for (int x = 0; x < line.length(); x++) {
+
+				char c = line.charAt(x);
+
+				if (c == '#' || c == 'O' || c == '.') {
+					if (c == 'O') {
+						c = 'T';
+					}
+					map.put(Pair.of(x, y), c);
+				}
+
+			}
+
+		}
+
+		return map;
 	}
 
 }
