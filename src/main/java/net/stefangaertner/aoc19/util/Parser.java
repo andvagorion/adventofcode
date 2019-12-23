@@ -18,10 +18,12 @@ public class Parser {
 	private int counter = 0;
 	private boolean finished = false;
 
-	private int[] inputs = new int[0];
+	private long[] inputs = new long[0];
 	private int inputCounter = 0;
 
 	private List<String> output = new ArrayList<>();
+	private List<String> unhandledOutput = new ArrayList<>();
+
 	private boolean stopOnOutput = false;
 	private boolean halted = false;
 
@@ -33,7 +35,7 @@ public class Parser {
 	private int relativeOffset = 0;
 
 	private long stepCount = 0;
-	
+
 	private Parser() {
 	}
 
@@ -49,12 +51,6 @@ public class Parser {
 			step();
 		}
 
-		return this;
-	}
-
-	public Parser input(String input) {
-		this.inputs = ArrayUtils.combine(inputs, Arrays.stream(input.split(",")).mapToInt(Integer::parseInt).toArray());
-		this.needsInput = false;
 		return this;
 	}
 
@@ -121,7 +117,7 @@ public class Parser {
 			}
 			this.needsInput = false;
 
-			int in = this.inputs[inputCounter++];
+			long in = this.inputs[inputCounter++];
 
 			long target = evalulateTarget(counter + 1, mode1);
 
@@ -136,6 +132,7 @@ public class Parser {
 			long out = evalulateParam(counter + 1, mode1);
 
 			output.add(String.valueOf(out));
+			unhandledOutput.add(String.valueOf(out));
 
 			if (this.stopOnOutput) {
 				this.halted = true;
@@ -235,7 +232,7 @@ public class Parser {
 
 		int currentMemory = this.memory.length;
 
-		if (address > currentMemory) {
+		if (address >= currentMemory) {
 
 			int times = (int) (address / currentMemory);
 
@@ -341,7 +338,21 @@ public class Parser {
 		return this.output.get(this.output.size() - 1);
 	}
 
-	public void setMemoryAddress(int i, int j) {
+	public boolean hasUnhandledOutput() {
+		return !this.unhandledOutput.isEmpty();
+	}
+	
+	public int sizeOfUnhandledOutput() {
+		return this.unhandledOutput.size();
+	}
+	
+	public List<String> getUnhandledOutput() {
+		List<String> retval = new ArrayList<>(this.unhandledOutput);
+		this.unhandledOutput.clear();
+		return retval;
+	}
+
+	public void setMemoryAddress(int i, long j) {
 		checkMemory(i);
 		this.memory[i] = j;
 	}
@@ -361,16 +372,45 @@ public class Parser {
 		p.finished = this.finished;
 		p.halted = this.halted;
 		p.inputCounter = this.inputCounter;
-		p.inputs = new int[this.inputs.length];
-		System.arraycopy(this.inputs, 0, p.inputs, 0, this.inputs.length );
+		p.inputs = new long[this.inputs.length];
+		System.arraycopy(this.inputs, 0, p.inputs, 0, this.inputs.length);
 		p.memory = new long[this.memory.length];
-		System.arraycopy(this.memory, 0, p.memory, 0, this.memory.length );
+		System.arraycopy(this.memory, 0, p.memory, 0, this.memory.length);
 		p.needsInput = this.needsInput;
 		p.output = new ArrayList<>(this.output);
+		p.unhandledOutput = new ArrayList<>(this.unhandledOutput);
 		p.relativeOffset = this.relativeOffset;
 		p.stepCount = this.stepCount;
 		p.stopOnInput = this.stopOnInput;
 		p.stopOnOutput = this.stopOnOutput;
 		return p;
 	}
+
+	public Parser input(long[] in) {
+		this.inputs = ArrayUtils.combine(inputs, in);
+		this.needsInput = false;
+		return this;
+	}
+
+	public Parser input(long i) {
+		long[] in = new long[1];
+		in[0] = i;
+		return this.input(in);
+	}
+
+	public Parser input(String input) {
+		long[] in = Arrays.stream(input.split(",")).mapToLong(Long::parseLong).toArray();
+		return this.input(in);
+	}
+
+	public void asciiInput(char c) {
+		this.input((int) c + "");
+	}
+
+	public void asciiInput(String string) {
+		for (int i = 0; i < string.length(); i++) {
+			this.asciiInput(string.charAt(i));
+		}
+	}
+
 }

@@ -1,19 +1,19 @@
 package net.stefangaertner.aoc18.pojo;
 
 public class Pair {
-	
+
 	public int x;
 	public int y;
-	
+
 	public Pair(int x, int y) {
 		this.x = x;
 		this.y = y;
 	}
-	
+
 	public String toString() {
 		return this.x + ", " + this.y;
 	}
-	
+
 	public static Pair of(int x, int y) {
 		return new Pair(x, y);
 	}
@@ -35,7 +35,7 @@ public class Pair {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		
+
 		Pair other = (Pair) obj;
 		return this.x == other.x && this.y == other.y;
 	}
@@ -43,4 +43,35 @@ public class Pair {
 	public Pair copy() {
 		return new Pair(this.x, this.y);
 	}
+
+	public Pair turnRight() {
+		if (Pair.of(0, -1).equals(this)) {
+			return Pair.of(1, 0);
+		} else if (Pair.of(1, 0).equals(this)) {
+			return Pair.of(0, 1);
+		} else if (Pair.of(0, 1).equals(this)) {
+			return Pair.of(-1, 0);
+		} else if (Pair.of(-1, 0).equals(this)) {
+			return Pair.of(0, -1);
+		}
+		return null;
+	}
+
+	public Pair turnLeft() {
+		if (Pair.of(0, -1).equals(this)) {
+			return Pair.of(-1, 0);
+		} else if (Pair.of(-1, 0).equals(this)) {
+			return Pair.of(0, 1);
+		} else if (Pair.of(0, 1).equals(this)) {
+			return Pair.of(1, 0);
+		} else if (Pair.of(1, 0).equals(this)) {
+			return Pair.of(0, -1);
+		}
+		return null;
+	}
+
+	public Pair add(Pair delta) {
+		return Pair.of(this.x + delta.x, this.y + delta.y);
+	}
+
 }
