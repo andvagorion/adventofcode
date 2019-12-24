@@ -1,177 +1,89 @@
 package net.stefangaertner.aoc19;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.Stack;
 import java.util.stream.Collectors;
 
-import net.stefangaertner.aoc18.pojo.Pair;
-import net.stefangaertner.aoc19.util.Parser;
-import net.stefangaertner.util.ArrayUtils;
 import net.stefangaertner.util.FileUtils;
-import net.stefangaertner.util.PairUtils;
-import net.stefangaertner.util.StringUtils;
 
 public class Day16 {
 
 	private static int[] basePattern = new int[] { 0, 1, 0, -1 };
 
 	public static void main(String[] strings) throws IOException {
-		
-		// part1();
-		part2();
-		
-	}
-	
-	private static void part1() {
-		
+
 		List<String> lines = FileUtils.read("aoc19/016-data");
 		String inputStr = lines.get(0);
-		
-		int[] input = parse(inputStr);
-		int max = 100;
 
-		for (int t = 0; t < max; t++) {
+//		System.out.println(getFirst8(calc("80871224585914546619083218645595", 100)));
+//		System.out.println(getFirst8(calc("19617804207202209144916044189917", 100)));
+//		System.out.println(getFirst8(calc("69317163492948606335995924319873", 100)));
 
-			int[] out = new int[input.length];
+		System.out.println("Part 1: " + getFirst8(calc(inputStr, 100)));
 
-			for (int i = 0; i < input.length; i++) {
+		// printFirst8(calc(StringUtils.repeat(inputStr, 10000), 100));
 
-				// base pattern repeat * i
-				// shift 1 left
-				int[] pattern = widen(basePattern, i + 1, input.length);
+	}
+
+	private static int[] calc(String inputStr, int phases) {
+		int[] arr1 = parse(inputStr);
+		int[] arr2 = new int[arr1.length];
+
+		for (int times = 0; times < phases; times++) {
+
+//			long start = System.currentTimeMillis();
+//			System.out.print("running iteration " + (times + 1));
+
+			boolean swapped = times % 2 == 1;
+
+			int[] in = swapped ? arr2 : arr1;
+			int[] out = swapped ? arr1 : arr2;
+
+			for (int phase = 0; phase < in.length; phase++) {
 
 				int sum = 0;
 
-				for (int j = 0; j < input.length; j++) {
-					int x = input[j] * pattern[j];
-					sum += x;
+				// pattern for 1s, starts at i
+				int pointer = phase;
+				while (pointer < in.length) {
+
+					for (int i = pointer; i < pointer + (phase + 1) && i < in.length; i++) {
+						// System.out.println("adding " + in[i]);
+						sum += in[i];
+					}
+
+					pointer += (phase + 1) * 4;
+				}
+
+				// pattern for -1s
+				pointer = ((phase + 1) * 3) - 1;
+				while (pointer < in.length) {
+
+					for (int i = pointer; i < pointer + (phase + 1) && i < in.length; i++) {
+						// System.out.println("subtracting " + in[i]);
+						sum -= in[i];
+					}
+
+					pointer += (phase + 1) * 4;
 				}
 
 				sum %= 10;
+				out[phase] = Math.abs(sum);
 
-				if (sum < 0) {
-					sum *= -1;
-				}
-
-				out[i] = sum;
 			}
 
-			input = out;
+//			long end = System.currentTimeMillis();
+//			System.out.println(" " + (end - start) + " ms");
+		}
 
-		}
-		
-		// take first 8 digits
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < 8; i++) {
-			sb.append(input[i]);
-		}
-		
-		System.out.println(sb.toString());
-		
-		// System.out.println(Arrays.stream(input).mapToObj(String::valueOf).collect(Collectors.joining("")));
+		return (phases % 2 == 0) ? arr1 : arr2;
+
 	}
-	
-	private static void part2() {
 
-		List<String> lines = FileUtils.read("aoc19/016-data");
-		String inputStr = lines.get(0);
-		
-		//inputStr = "03036732577212944063491565474664";
-		
+	private static int getOffset(String inputStr) {
 		String offsetStr = inputStr.substring(0, 7);
-		int offset = Integer.parseInt(offsetStr);
-		
-		System.out.println(inputStr.length());
-		
-		// repeat 10000 times
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < 10000; i++) {
-			sb.append(inputStr);
-		}
-		
-		inputStr = sb.toString();
-		
-		System.out.println(inputStr.length());
-		
-		int[] input = parse(inputStr);
-		int max = 100;
-
-		for (int t = 0; t < max; t++) {
-			
-			System.out.println((t + 1) + " times");
-
-			int[] out = new int[input.length];
-
-			for (int i = 0; i < input.length; i++) {
-				
-				if (i % 10000 == 0) {
-					System.out.println(i);
-				}
-
-				// base pattern repeat * i
-				// shift 1 left
-				int[] pattern = widen(basePattern, i + 1, input.length);
-
-				int sum = 0;
-
-				for (int j = 0; j < input.length; j++) {
-					int x = input[j] * pattern[j];
-					sum += x;
-				}
-
-				sum %= 10;
-
-				if (sum < 0) {
-					sum *= -1;
-				}
-
-				out[i] = sum;
-			}
-
-			input = out;
-
-		}
-		
-		// take first 8 digits
-		sb = new StringBuilder();
-		for (int i = offset; i < offset + 8; i++) {
-			sb.append(input[i]);
-		}
-		
-		System.out.println(sb.toString());
-		
-	}
-
-	private static int[] widen(int[] pattern, int times, int len) {
-		int[] ret = new int[len + 1];
-
-		int patternIdx = 0;
-		outer: for (int i = 0; i <= len; i++) {
-
-			for (int j = 0; j < times; j++) {
-				int pos = i * times + j;
-				if (pos > len) {
-					break outer;
-				}
-				ret[pos] = pattern[patternIdx];
-			}
-
-			patternIdx++;
-			patternIdx %= pattern.length;
-		}
-
-		int[] out = new int[ret.length - 1];
-		System.arraycopy(ret, 1, out, 0, out.length);
-
-		return out;
+		return Integer.parseInt(offsetStr);
 	}
 
 	private static int[] parse(String string) {
@@ -181,6 +93,10 @@ public class Day16 {
 		}
 
 		return x;
+	}
+
+	private static String getFirst8(int[] arr) {
+		return Arrays.stream(arr).limit(8).mapToObj(String::valueOf).collect(Collectors.joining());
 	}
 
 }

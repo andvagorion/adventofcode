@@ -55,8 +55,8 @@ public class StringUtils {
 			System.out.println(sb.toString());
 		}
 	}
-
-	public static void print2Darray(boolean[][] arr) {
+	
+	public static void print2Darray(boolean[][] arr, char t, char f) {
 		if (arr == null)
 			return;
 		
@@ -64,10 +64,14 @@ public class StringUtils {
 			boolean[] row = arr[y];
 			StringBuilder sb = new StringBuilder();
 			for (int x = 0; x < row.length; x++) {
-				sb.append(row[x] ? 1 : 0);
+				sb.append(row[x] ? t : f);
 			}
 			System.out.println(sb.toString());
 		}
+	}
+
+	public static void print2Darray(boolean[][] arr) {
+		print2Darray(arr, '1', '0');
 	}
 
 	public static void print2Darray(int[][] arr) {

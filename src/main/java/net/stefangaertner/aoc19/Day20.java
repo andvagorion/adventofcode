@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 import net.stefangaertner.aoc18.pojo.Pair;
 import net.stefangaertner.util.FileUtils;
-import net.stefangaertner.util.StringUtils;
+import net.stefangaertner.util.GridUtils;
 
 public class Day20 {
 
@@ -17,38 +17,39 @@ public class Day20 {
 
 		List<String> lines = FileUtils.read("aoc19/020-data");
 
-		char[][] grid = toGrid(lines);
+		part1(lines);
+
+	}
+
+	private static void part1(List<String> lines) {
+
+		char[][] grid = GridUtils.toGrid(lines);
 
 		Map<String, Pair> entries = parse(grid);
-
-		entries.entrySet().stream().forEach(e -> System.out.println(e.getKey() + " => " + e.getValue()));
-		System.out.println(" ");
 
 		// find connected entries by flood fill
 		Map<String, Map<String, Integer>> connections = findConnections(lines, entries);
 
-		connections.entrySet().stream().forEach(e -> {
-			System.out.println(e.getKey());
-			System.out.println("=======");
-			e.getValue().entrySet().stream().forEach(e2 -> {
-				System.out.println(e2.getKey() + " => " + e2.getValue());
-			});
-		});
-		System.out.println(" ");
+//		connections.entrySet().stream().forEach(e -> {
+//			System.out.println(e.getKey());
+//			System.out.println("=======");
+//			e.getValue().entrySet().stream().forEach(e2 -> {
+//				System.out.println(e2.getKey() + " => " + e2.getValue());
+//			});
+//		});
+//		System.out.println(" ");
 
 		// find shortest path
+		List<Integer> pathCounts = new ArrayList<>();
+		findPaths(connections, 0, "AA", "", 0, pathCounts);
 
-		List<List<String>> paths = new ArrayList<>();
-		findPaths(connections, 0, "AA", "", 0);
-
-		paths.stream().forEach(p -> {
-			System.out.println(p.stream().collect(Collectors.joining(" => ")));
-		});
-
+		int min = pathCounts.stream().min(Integer::compare).get();
+		
+		System.out.println("Part 1: " + min);
 	}
 
 	private static void findPaths(Map<String, Map<String, Integer>> connections, int count, String node, String s,
-			int currentTiles) {
+			int currentTiles, List<Integer> pathCounts) {
 
 		if (s.contains(node)) {
 			// loop
@@ -58,8 +59,7 @@ public class Day20 {
 		s += " => " + node + "(" + currentTiles + ", " + count + ")";
 
 		if (node.equals("ZZ")) {
-			System.out.println(s);
-			System.out.println(count);
+			pathCounts.add(count);
 			return;
 		}
 
@@ -80,7 +80,7 @@ public class Day20 {
 			String other = link.getKey();
 			Integer tiles = link.getValue();
 
-			findPaths(connections, count + tiles, other, s, tiles);
+			findPaths(connections, count + tiles, other, s, tiles, pathCounts);
 		}
 	}
 
@@ -102,7 +102,7 @@ public class Day20 {
 
 			Pair val = entry.getValue();
 
-			char[][] grid = toGrid(lines);
+			char[][] grid = GridUtils.toGrid(lines);
 			grid[val.y][val.x] = c;
 
 			Map<String, Integer> connected = new HashMap<>();
@@ -177,30 +177,6 @@ public class Day20 {
 		return false;
 	}
 
-	private static void part1() {
-
-	}
-
-	private static char[][] toGrid(List<String> lines) {
-
-		char[][] grid = new char[lines.size()][];
-
-		for (int y = 0; y < lines.size(); y++) {
-
-			String line = lines.get(y);
-
-			grid[y] = new char[line.length()];
-
-			for (int x = 0; x < line.length(); x++) {
-
-				grid[y][x] = line.charAt(x);
-
-			}
-		}
-
-		return grid;
-	}
-
 	private static Map<String, Pair> parse(char[][] grid) {
 
 		Map<String, Pair> entries = new HashMap<>();
@@ -270,22 +246,6 @@ public class Day20 {
 
 	private static boolean isTopExit(char[][] grid, int x, int y) {
 		return grid[y - 1][x] != '#' && grid[y - 1][x] != '.';
-	}
-
-	private int countThickness(List<String> lines) {
-		int middle = lines.size() / 2;
-		String line = lines.get(middle);
-
-		int thickness = 0;
-
-		for (int x = 0; x < line.length(); x++) {
-			char c = line.charAt(x);
-			if (c == '#' || c == '.') {
-				thickness++;
-			}
-		}
-
-		return thickness / 2;
 	}
 
 }

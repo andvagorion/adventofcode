@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import net.stefangaertner.aoc18.pojo.Pair;
 
@@ -69,22 +71,17 @@ public class ArrayUtils {
 		return true;
 
 	}
-	
+
 	public static List<Pair> findNeighbors(char[][] grid, Pair center, char c) {
-		
-		List<Pair> pairs = new ArrayList<>();
-		pairs.add(Pair.of(-1, 0));
-		pairs.add(Pair.of(1, 0));
-		pairs.add(Pair.of(0, -1));
-		pairs.add(Pair.of(0, 1));
+
+		List<Pair> pairs = getNeighboringPairs(center);
 
 		List<Pair> neighbors = new ArrayList<>();
-		
+
 		for (Pair pair : pairs) {
-			Pair test = Pair.of(center.x + pair.x, center.y + pair.y);
 			try {
-				if (grid[test.y][test.x] == c) {
-					neighbors.add(test);
+				if (grid[pair.y][pair.x] == c) {
+					neighbors.add(pair);
 				}
 			} catch (IndexOutOfBoundsException e) {
 				continue;
@@ -92,6 +89,44 @@ public class ArrayUtils {
 		}
 
 		return neighbors;
+	}
+
+	public static int countNeighbors(boolean[][] grid, Pair center, Function<Boolean, Boolean> mapper) {
+		List<Pair> pairs = getNeighboringPairs(center);
+
+		return (int) pairs.stream().filter(p -> {
+			try {
+				return mapper.apply(grid[p.y][p.x]);
+			} catch (IndexOutOfBoundsException e) {
+				return false;
+			}
+		}).count();
+
+	}
+
+	private static List<Pair> getNeighboringPairs(Pair center) {
+
+		List<Pair> pairs = new ArrayList<>();
+		pairs.add(Pair.of(-1, 0));
+		pairs.add(Pair.of(1, 0));
+		pairs.add(Pair.of(0, -1));
+		pairs.add(Pair.of(0, 1));
+
+		return pairs.stream().map(p -> Pair.of(p.x + center.x, p.y + center.y)).collect(Collectors.toList());
+	}
+
+	public static <T> void print2Darray(T[] arr) {
+		if (arr == null)
+			return;
+
+		System.out.println(Arrays.stream(arr).map(String::valueOf).collect(Collectors.joining(", ")));
+	}
+
+	public static void print(int[] arr) {
+		if (arr == null)
+			return;
+
+		System.out.println(Arrays.stream(arr).mapToObj(String::valueOf).collect(Collectors.joining(", ")));
 	}
 
 }
