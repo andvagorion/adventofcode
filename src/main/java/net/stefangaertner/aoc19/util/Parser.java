@@ -403,15 +403,15 @@ public class Parser {
 		return this.input(in);
 	}
 
-	public void asciiInput(char c) {
-		this.input((long) c);
+	public Parser asciiInput(char c) {
+		return this.input((long) c);
 	}
 
-	public void asciiInput(String string) {
+	public Parser asciiInput(String string) {
 		for (int i = 0; i < string.length(); i++) {
 			this.asciiInput(string.charAt(i));
 		}
-		this.asciiInput('\n');
+		return this.asciiInput('\n');
 	}
 
 }

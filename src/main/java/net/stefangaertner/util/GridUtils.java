@@ -78,6 +78,15 @@ public class GridUtils {
 		return copy;
 	}
 
+	public static char[][] clone(char[][] grid) {
+		char[][] copy = new char[grid.length][];
+		for (int y = 0; y < grid.length; y++) {
+			copy[y] = new char[grid[y].length];			
+			System.arraycopy(grid[y], 0, copy[y], 0, grid[y].length);
+		}
+		return copy;
+	}
+
 	public static int countValues(boolean[][] grid, Predicate<Boolean> predicate) {
 		int sum = 0;
 		

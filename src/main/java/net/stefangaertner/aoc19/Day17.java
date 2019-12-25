@@ -3,14 +3,13 @@ package net.stefangaertner.aoc19;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
-import net.stefangaertner.aoc18.pojo.Direction;
 import net.stefangaertner.aoc18.pojo.Pair;
 import net.stefangaertner.aoc19.util.Parser;
 import net.stefangaertner.util.ArrayUtils;
 import net.stefangaertner.util.FileUtils;
+import net.stefangaertner.util.GridUtils;
 import net.stefangaertner.util.StringUtils;
 
 public class Day17 {
@@ -20,135 +19,8 @@ public class Day17 {
 		String code = FileUtils.read("aoc19/017-data").get(0);
 
 		part1(code, false);
+		part2(code, false);
 
-		// part2(code);
-
-	}
-
-	private static List<String> getMovementCommands(String code) {
-
-		char[][] grid = parseGrid(code);
-
-		List<String> commands = new ArrayList<>();
-
-		Pair pos = findPosition(grid);
-
-		// robot starts looking north
-		Pair dir = Pair.of(0, -1);
-
-		int max = 0;
-
-		while (true && max < 40) {
-			max++;
-
-			grid[pos.y][pos.x] = 'x';
-
-			// find next position to go
-			Pair nextPos = findNextPosition(grid, pos);
-
-			if (nextPos == null) {
-				break;
-			}
-
-			// find turn direction
-			Pair left = dir.turnLeft();
-			Pair right = dir.turnRight();
-
-			if (Pair.of(pos.x + left.x, pos.y + left.y).equals(nextPos)) {
-				commands.add("L");
-				dir = left;
-			} else if (Pair.of(pos.x + right.x, pos.y + right.y).equals(nextPos)) {
-				commands.add("R");
-				dir = right;
-			}
-
-			// go forward as much as possible
-			int moves = 0;
-			while (isPlatform(grid, pos.add(dir))) {
-				pos = pos.add(dir);
-				grid[pos.y][pos.x] = 'x';
-				moves++;
-			}
-
-			commands.add(String.valueOf(moves));
-
-			StringUtils.print2Darray(grid);
-		}
-
-		return commands;
-	}
-
-	private static boolean isPlatform(char[][] grid, Pair pos) {
-		char c = grid[pos.y][pos.x];
-		return c == '#' || c == 'o';
-	}
-
-	private static Pair findNextPosition(char[][] grid, Pair pos) {
-
-		List<Pair> neighbors = ArrayUtils.findNeighbors(grid, pos, '#');
-
-		// assumption: paths never overlap direct in a corner
-
-		return !neighbors.isEmpty() ? neighbors.get(0) : null;
-	}
-
-	private static Pair findPosition(char[][] grid) {
-		for (int y = 0; y < grid.length; y++) {
-			char[] row = grid[y];
-			for (int x = 0; x < row.length; x++) {
-				char c = grid[y][x];
-				if (c == '<' || c == '^' || c == 'v' || c == '>') {
-					return Pair.of(x, y);
-				}
-			}
-		}
-		return null;
-	}
-
-	private static Pair getDirection(char c) {
-		switch (c) {
-		case '^':
-			return Pair.of(0, -1);
-		case '>':
-			return Pair.of(1, 0);
-		case 'v':
-			return Pair.of(0, 1);
-		case '<':
-			return Pair.of(-1, 0);
-		default:
-			return null;
-		}
-	}
-
-	private static void part2(String code) {
-		
-		List<String> commands = getMovementCommands(code);
-
-		System.out.println(commands.stream().collect(Collectors.joining(",")));
-
-		Parser p = Parser.create(code).stopOnInput().stopOnOutput();
-
-		// wake up robot by changing address 0 from 1 to 2
-		p.setMemoryAddress(0, 2);
-
-		p.asciiInput("A,B,C");
-		p.asciiInput("L");
-		p.asciiInput("R");
-		p.asciiInput("L");
-		p.asciiInput("y");
-
-		int i = 0;
-
-		while (!p.isFinished() && !p.needsInput()) {
-
-			p.run();
-
-			String out = p.getLastOutput();
-			int num = Integer.parseInt(out);
-
-			System.out.print((char) num);
-
-		}
 	}
 
 	private static void part1(String code, boolean debugPrint) {
@@ -179,6 +51,193 @@ public class Day17 {
 		}
 
 		System.out.println("Part 1: " + sum);
+	}
+
+	private static void part2(String code, boolean debugPrint) {
+
+		// List<String> commands = getMovementCommands(code);
+		// System.out.println(commands.stream().collect(Collectors.joining(",")));
+
+		/*
+		 * (A) L,12,L,8,R,10,R,10,
+		 * 
+		 * (B) L,6,L,4,L,12,
+		 * 
+		 * (A) L,12,L,8,R,10,R,10,
+		 * 
+		 * (B) L,6,L,4,L,12,
+		 * 
+		 * (C) R,10,L,8,L,4,R,10,
+		 * 
+		 * (B) L,6,L,4,L,12,
+		 * 
+		 * (A) L,12,L,8,R,10,R,10,
+		 * 
+		 * (C) R,10,L,8,L,4,R,10,
+		 * 
+		 * (B) L,6,L,4,L,12,
+		 * 
+		 * (C) R,10,L,8,L,4,R,10
+		 */
+
+		String order = "A,B,A,B,C,B,A,C,B,C";
+		String a = "L,12,L,8,R,10,R,10";
+		String b = "L,6,L,4,L,12";
+		String c = "R,10,L,8,L,4,R,10";
+
+		String dust = move(code, order, a, b, c, debugPrint);
+		System.out.println("Part 2: " + dust);
+	}
+
+	private static String move(String code, String order, String a, String b, String c, boolean debugPrint) {
+
+		Parser p = Parser.create(code).stopOnInput().stopOnOutput();
+
+		// wake up robot by changing address 0 from 1 to 2
+		p.setMemoryAddress(0, 2);
+
+		p.asciiInput(order).asciiInput(a).asciiInput(b).asciiInput(c).asciiInput("n");
+
+		while (!p.isFinished() && !p.needsInput()) {
+
+			p.run();
+
+			if (debugPrint) {
+
+				String out = p.getLastOutput();
+				int num = Integer.parseInt(out);
+				if (num < 128) {
+					System.out.print((char) num);
+				} else {
+					System.out.println(num);
+				}
+
+			}
+
+		}
+
+		return p.getLastOutput();
+	}
+
+	private static List<String> getMovementCommands(String code) {
+
+		char[][] grid = parseGrid(code);
+
+		List<Pair> visited = new ArrayList<>();
+		List<String> commands = new ArrayList<>();
+
+		Pair pos = findPosition(grid);
+		visited.add(pos);
+
+		// robot starts looking north
+		Pair dir = Pair.of(0, -1);
+
+		int max = 0;
+
+		while (true && max < 40) {
+			max++;
+
+			// find next position to go
+			List<Pair> possiblePositions = findPossiblePositions(grid, pos);
+
+			possiblePositions = possiblePositions.stream().filter(p -> !visited.contains(p))
+					.collect(Collectors.toList());
+
+			if (possiblePositions.isEmpty()) {
+				// no more possible tiles
+				break;
+			} else if (possiblePositions.size() > 1) {
+				System.out.println("ERROR. MORE THAN ONE POSSIBLE MOVE.");
+				debugPrint(grid, visited, pos, possiblePositions);
+
+				break;
+			}
+
+			Pair nextPos = possiblePositions.get(0);
+
+			// find turn direction
+			Pair left = dir.turnLeft();
+			Pair right = dir.turnRight();
+
+			if (Pair.of(pos.x + left.x, pos.y + left.y).equals(nextPos)) {
+				commands.add("L");
+				dir = left;
+			} else if (Pair.of(pos.x + right.x, pos.y + right.y).equals(nextPos)) {
+				commands.add("R");
+				dir = right;
+			}
+
+			// go forward as much as possible
+			int moves = 0;
+			while (isPlatform(grid, pos.add(dir))) {
+				pos = pos.add(dir);
+				visited.add(pos);
+				moves++;
+			}
+
+			commands.add(String.valueOf(moves));
+
+		}
+
+		return commands;
+	}
+
+	private static void debugPrint(char[][] grid, List<Pair> visited, Pair pos, List<Pair> highlight) {
+		char[][] out = GridUtils.clone(grid);
+		out[pos.y][pos.x] = 'X';
+		visited.forEach(p -> out[p.y][p.x] = 'O');
+		highlight.forEach(p -> out[p.y][p.x] = '?');
+		StringUtils.print2Darray(out);
+	}
+
+	private static boolean isPlatform(char[][] grid, Pair pos) {
+		try {
+
+			char c = grid[pos.y][pos.x];
+			return c == '#';
+
+		} catch (ArrayIndexOutOfBoundsException e) {
+			// out of grid
+			return false;
+
+		}
+	}
+
+	private static List<Pair> findPossiblePositions(char[][] grid, Pair pos) {
+
+		List<Pair> neighbors = ArrayUtils.findNeighbors(grid, pos, '#');
+
+		// assumption: paths never overlap direct in a corner
+
+		return neighbors;
+	}
+
+	private static Pair findPosition(char[][] grid) {
+		for (int y = 0; y < grid.length; y++) {
+			char[] row = grid[y];
+			for (int x = 0; x < row.length; x++) {
+				char c = grid[y][x];
+				if (c == '<' || c == '^' || c == 'v' || c == '>') {
+					return Pair.of(x, y);
+				}
+			}
+		}
+		return null;
+	}
+
+	private static Pair getDirection(char c) {
+		switch (c) {
+		case '^':
+			return Pair.of(0, -1);
+		case '>':
+			return Pair.of(1, 0);
+		case 'v':
+			return Pair.of(0, 1);
+		case '<':
+			return Pair.of(-1, 0);
+		default:
+			return null;
+		}
 	}
 
 	private static char[][] parseGrid(String code) {

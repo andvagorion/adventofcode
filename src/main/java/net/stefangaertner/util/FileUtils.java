@@ -33,4 +33,14 @@ public class FileUtils {
 		return result;
 	}
 
+	public static String readLine(String filename) {
+		List<String> result = read(filename);
+		
+		if (result.isEmpty()) {
+			return null;
+		}
+		
+		return result.get(0);
+	}
+
 }

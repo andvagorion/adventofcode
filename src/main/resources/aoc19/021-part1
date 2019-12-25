@@ -1,0 +1,20 @@
+# springdroid jumps 4 tiles
+# need: (!A || !B || !C) && D
+# if A, B or C is a hole and D not => jump
+
+# no ground at n+1 => jump
+NOT A T
+OR T J
+
+# no ground at n+2 => jump
+NOT B T
+OR T J
+
+# no ground at n+3 => jump
+NOT C T
+OR T J
+
+# and ground at D
+AND D J
+
+WALK
