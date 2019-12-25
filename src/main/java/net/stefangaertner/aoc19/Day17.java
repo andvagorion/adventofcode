@@ -131,11 +131,11 @@ public class Day17 {
 		// wake up robot by changing address 0 from 1 to 2
 		p.setMemoryAddress(0, 2);
 
-		p.asciiInput("A,B,C\n");
-		p.asciiInput("L\n");
-		p.asciiInput("R\n");
-		p.asciiInput("L\n");
-		p.asciiInput("y\n");
+		p.asciiInput("A,B,C");
+		p.asciiInput("L");
+		p.asciiInput("R");
+		p.asciiInput("L");
+		p.asciiInput("y");
 
 		int i = 0;
 

@@ -404,13 +404,14 @@ public class Parser {
 	}
 
 	public void asciiInput(char c) {
-		this.input((int) c + "");
+		this.input((long) c);
 	}
 
 	public void asciiInput(String string) {
 		for (int i = 0; i < string.length(); i++) {
 			this.asciiInput(string.charAt(i));
 		}
+		this.asciiInput('\n');
 	}
 
 }
