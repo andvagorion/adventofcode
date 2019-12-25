@@ -386,7 +386,7 @@ public class Parser {
 		return p;
 	}
 
-	public Parser input(long[] in) {
+	public Parser input(long... in) {
 		this.inputs = ArrayUtils.combine(inputs, in);
 		this.needsInput = false;
 		return this;
