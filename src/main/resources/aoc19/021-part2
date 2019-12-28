@@ -1,16 +1,9 @@
-# D && !(A && B) || !(C || !H)
-
-NOT J J
-AND A J
-AND B J
-# AND C J
-NOT J J
-
-NOT H T
-OR C T
-NOT T T
-OR T J
-
+OR E J
+OR H J
 AND D J
-
+OR A T
+AND B T
+AND C T
+NOT T T
+AND T J
 RUN
