@@ -76,7 +76,7 @@ public class Day04 {
 			return false;
 		}
 
-		return pp.get("hcl").matches("#[0-9a-fA-F]{6}");
+		return pp.get("hcl").matches("#[0-9a-f]{6}");
 	};
 
 	// ecl (Eye Color) - exactly one of: amb blu brn gry grn hzl oth.
