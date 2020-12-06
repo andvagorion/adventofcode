@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import net.stefangaertner.aoc18.pojo.Pair;
+import net.stefangaertner.aoc18.pojo.Point;
 
 public class ArrayUtils {
 
@@ -46,19 +46,19 @@ public class ArrayUtils {
 		return grid;
 	}
 
-	public static boolean matchesCross(char[][] grid, Pair center, char c) {
+	public static boolean matchesCross(char[][] grid, Point center, char c) {
 
 		if (grid[center.y][center.x] != c) {
 			return false;
 		}
 
-		List<Pair> pairs = new ArrayList<>();
-		pairs.add(Pair.of(-1, 0));
-		pairs.add(Pair.of(1, 0));
-		pairs.add(Pair.of(0, -1));
-		pairs.add(Pair.of(0, 1));
+		List<Point> pairs = new ArrayList<>();
+		pairs.add(Point.of(-1, 0));
+		pairs.add(Point.of(1, 0));
+		pairs.add(Point.of(0, -1));
+		pairs.add(Point.of(0, 1));
 
-		for (Pair pair : pairs) {
+		for (Point pair : pairs) {
 			try {
 				if (grid[center.y + pair.y][center.x + pair.x] != c) {
 					return false;
@@ -72,13 +72,13 @@ public class ArrayUtils {
 
 	}
 
-	public static List<Pair> findNeighbors(char[][] grid, Pair center, char c) {
+	public static List<Point> findNeighbors(char[][] grid, Point center, char c) {
 
-		List<Pair> pairs = getNeighboringPairs(center);
+		List<Point> pairs = getNeighboringPairs(center);
 
-		List<Pair> neighbors = new ArrayList<>();
+		List<Point> neighbors = new ArrayList<>();
 
-		for (Pair pair : pairs) {
+		for (Point pair : pairs) {
 			try {
 				if (grid[pair.y][pair.x] == c) {
 					neighbors.add(pair);
@@ -91,8 +91,8 @@ public class ArrayUtils {
 		return neighbors;
 	}
 
-	public static int countNeighbors(boolean[][] grid, Pair center, Function<Boolean, Boolean> mapper) {
-		List<Pair> pairs = getNeighboringPairs(center);
+	public static int countNeighbors(boolean[][] grid, Point center, Function<Boolean, Boolean> mapper) {
+		List<Point> pairs = getNeighboringPairs(center);
 
 		return (int) pairs.stream().filter(p -> {
 			try {
@@ -104,15 +104,15 @@ public class ArrayUtils {
 
 	}
 
-	private static List<Pair> getNeighboringPairs(Pair center) {
+	private static List<Point> getNeighboringPairs(Point center) {
 
-		List<Pair> pairs = new ArrayList<>();
-		pairs.add(Pair.of(-1, 0));
-		pairs.add(Pair.of(1, 0));
-		pairs.add(Pair.of(0, -1));
-		pairs.add(Pair.of(0, 1));
+		List<Point> pairs = new ArrayList<>();
+		pairs.add(Point.of(-1, 0));
+		pairs.add(Point.of(1, 0));
+		pairs.add(Point.of(0, -1));
+		pairs.add(Point.of(0, 1));
 
-		return pairs.stream().map(p -> Pair.of(p.x + center.x, p.y + center.y)).collect(Collectors.toList());
+		return pairs.stream().map(p -> Point.of(p.x + center.x, p.y + center.y)).collect(Collectors.toList());
 	}
 
 	public static <T> void print2Darray(T[] arr) {

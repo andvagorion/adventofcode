@@ -1,7 +1,7 @@
 package net.stefangaertner.aoc18;
 
 import net.stefangaertner.aoc18.pojo.Cave;
-import net.stefangaertner.aoc18.pojo.Pair;
+import net.stefangaertner.aoc18.pojo.Point;
 
 public class Day22 {
 
@@ -12,7 +12,7 @@ public class Day22 {
 
 	private static void part1() {
 		int depth = 4848;
-		Pair target = new Pair(15, 700);
+		Point target = new Point(15, 700);
 
 		Cave cave = new Cave(depth, target);
 
@@ -25,7 +25,7 @@ public class Day22 {
 	@SuppressWarnings("unused")
 	private static void example() {
 		int depth = 510;
-		Pair target = new Pair(10, 10);
+		Point target = new Point(10, 10);
 		Cave cave = new Cave(depth, target);
 	
 		cave.print();

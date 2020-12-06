@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import net.stefangaertner.aoc18.pojo.Pair;
+import net.stefangaertner.aoc18.pojo.Point;
 import net.stefangaertner.aoc19.util.Parser;
 import net.stefangaertner.util.ArrayUtils;
 import net.stefangaertner.util.FileUtils;
@@ -27,15 +27,15 @@ public class Day17 {
 
 		char[][] grid = parseGrid(code);
 
-		List<Pair> crosses = new ArrayList<>();
+		List<Point> crosses = new ArrayList<>();
 
 		int sum = 0;
 
 		for (int y = 0; y < grid.length; y++) {
 			char[] row = grid[y];
 			for (int x = 0; x < row.length; x++) {
-				if (ArrayUtils.matchesCross(grid, Pair.of(x, y), '#')) {
-					crosses.add(Pair.of(x, y));
+				if (ArrayUtils.matchesCross(grid, Point.of(x, y), '#')) {
+					crosses.add(Point.of(x, y));
 					int mult = x * y;
 					sum += mult;
 				}
@@ -43,7 +43,7 @@ public class Day17 {
 		}
 
 		if (debugPrint) {
-			for (Pair pair : crosses) {
+			for (Point pair : crosses) {
 				grid[pair.y][pair.x] = 'O';
 			}
 
@@ -123,14 +123,14 @@ public class Day17 {
 
 		char[][] grid = parseGrid(code);
 
-		List<Pair> visited = new ArrayList<>();
+		List<Point> visited = new ArrayList<>();
 		List<String> commands = new ArrayList<>();
 
-		Pair pos = GridUtils.find(grid, '^');
+		Point pos = GridUtils.find(grid, '^');
 		visited.add(pos);
 
 		// robot starts looking north
-		Pair dir = Pair.of(0, -1);
+		Point dir = Point.of(0, -1);
 
 		int max = 0;
 
@@ -138,7 +138,7 @@ public class Day17 {
 			max++;
 
 			// find next position to go
-			List<Pair> possiblePositions = findPossiblePositions(grid, pos);
+			List<Point> possiblePositions = findPossiblePositions(grid, pos);
 
 			possiblePositions = possiblePositions.stream().filter(p -> !visited.contains(p))
 					.collect(Collectors.toList());
@@ -153,16 +153,16 @@ public class Day17 {
 				break;
 			}
 
-			Pair nextPos = possiblePositions.get(0);
+			Point nextPos = possiblePositions.get(0);
 
 			// find turn direction
-			Pair left = dir.turnLeft();
-			Pair right = dir.turnRight();
+			Point left = dir.turnLeft();
+			Point right = dir.turnRight();
 
-			if (Pair.of(pos.x + left.x, pos.y + left.y).equals(nextPos)) {
+			if (Point.of(pos.x + left.x, pos.y + left.y).equals(nextPos)) {
 				commands.add("L");
 				dir = left;
-			} else if (Pair.of(pos.x + right.x, pos.y + right.y).equals(nextPos)) {
+			} else if (Point.of(pos.x + right.x, pos.y + right.y).equals(nextPos)) {
 				commands.add("R");
 				dir = right;
 			}
@@ -182,7 +182,7 @@ public class Day17 {
 		return commands;
 	}
 
-	private static void debugPrint(char[][] grid, List<Pair> visited, Pair pos, List<Pair> highlight) {
+	private static void debugPrint(char[][] grid, List<Point> visited, Point pos, List<Point> highlight) {
 		char[][] out = GridUtils.clone(grid);
 		out[pos.y][pos.x] = 'X';
 		visited.forEach(p -> out[p.y][p.x] = 'O');
@@ -190,7 +190,7 @@ public class Day17 {
 		StringUtils.print2Darray(out);
 	}
 
-	private static boolean isPlatform(char[][] grid, Pair pos) {
+	private static boolean isPlatform(char[][] grid, Point pos) {
 		try {
 
 			char c = grid[pos.y][pos.x];
@@ -203,9 +203,9 @@ public class Day17 {
 		}
 	}
 
-	private static List<Pair> findPossiblePositions(char[][] grid, Pair pos) {
+	private static List<Point> findPossiblePositions(char[][] grid, Point pos) {
 
-		List<Pair> neighbors = ArrayUtils.findNeighbors(grid, pos, '#');
+		List<Point> neighbors = ArrayUtils.findNeighbors(grid, pos, '#');
 
 		// assumption: paths never overlap direct in a corner
 

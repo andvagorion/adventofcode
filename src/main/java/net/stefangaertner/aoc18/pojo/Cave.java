@@ -3,13 +3,13 @@ package net.stefangaertner.aoc18.pojo;
 public class Cave {
 
 	public int depth;
-	public Pair target;
+	public Point target;
 
 	public int[][] geological;
 	public int[][] erosion;
 	public int[][] grid;
 
-	public Cave(int depth, Pair target) {
+	public Cave(int depth, Point target) {
 		this.depth = depth;
 		this.target = target;
 

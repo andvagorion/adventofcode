@@ -11,17 +11,17 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.stream.Collectors;
 
-import net.stefangaertner.aoc18.pojo.Pair;
+import net.stefangaertner.aoc18.pojo.Point;
 import net.stefangaertner.aoc19.util.Parser;
 import net.stefangaertner.util.FileUtils;
-import net.stefangaertner.util.PairUtils;
+import net.stefangaertner.util.PointUtils;
 import net.stefangaertner.util.StringUtils;
 
 public class Day15 {
 
 	public static void main(String[] strings) throws IOException {
 
-		Map<Pair, Character> map = explore();
+		Map<Point, Character> map = explore();
 
 		// PART 1: manually counted
 
@@ -33,10 +33,10 @@ public class Day15 {
 		while (true) {
 			i++;
 
-			List<Pair> empty = map.entrySet().stream().filter(m -> m.getValue() == 'T').map(Entry::getKey)
+			List<Point> empty = map.entrySet().stream().filter(m -> m.getValue() == 'T').map(Entry::getKey)
 					.collect(Collectors.toList());
 
-			for (Pair e : empty) {
+			for (Point e : empty) {
 				fill(map, e, 'T');
 			}
 
@@ -53,11 +53,11 @@ public class Day15 {
 		System.out.println("Part 2: " + i);
 	}
 
-	private static void fill(Map<Pair, Character> map, Pair pos, char c) {
+	private static void fill(Map<Point, Character> map, Point pos, char c) {
 
 		for (int i = 1; i < 5; i++) {
-			Pair delta = toPair(i);
-			Pair target = Pair.of(pos.x + delta.x, pos.y + delta.y);
+			Point delta = toPair(i);
+			Point target = Point.of(pos.x + delta.x, pos.y + delta.y);
 
 			if (map.containsKey(target) && map.get(target) == '.') {
 				map.put(target, c);
@@ -66,24 +66,24 @@ public class Day15 {
 
 	}
 
-	private static Map<Pair, Character> explore() {
+	private static Map<Point, Character> explore() {
 
 		List<String> lines = FileUtils.read("aoc19/015-data");
 		String code = lines.get(0);
 
-		Map<Pair, Character> map = new HashMap<>();
+		Map<Point, Character> map = new HashMap<>();
 		Parser p = Parser.create(code).stopOnInput();
 
-		Pair pos = Pair.of(0, 0);
+		Point pos = Point.of(0, 0);
 		map.put(pos, 's');
 
-		Set<Pair> visited = new HashSet<>();
+		Set<Point> visited = new HashSet<>();
 		visited.add(pos);
 
 		Stack<Parser> states = new Stack<>();
-		Stack<Pair> positions = new Stack<>();
+		Stack<Point> positions = new Stack<>();
 
-		Pair prevPos = Pair.of(-1, -1);
+		Point prevPos = Point.of(-1, -1);
 
 		int steps = 0;
 		while (true) {
@@ -96,7 +96,7 @@ public class Day15 {
 			}
 
 			// find possible moves
-			List<Pair> moves = findMoves(map, visited, pos);
+			List<Point> moves = findMoves(map, visited, pos);
 
 			// no more moves at current position
 			if (moves.isEmpty()) {
@@ -123,7 +123,7 @@ public class Day15 {
 			}
 
 			// move to next tile
-			Pair target = moves.get(0);
+			Point target = moves.get(0);
 			pos = move(p, map, pos, target);
 			visited.add(pos);
 
@@ -138,16 +138,16 @@ public class Day15 {
 
 	}
 
-	private static Pair move(Parser p, Map<Pair, Character> map, Pair pos, Pair target) {
-		int dir = toDir(Pair.of(target.x - pos.x, target.y - pos.y));
+	private static Point move(Parser p, Map<Point, Character> map, Point pos, Point target) {
+		int dir = toDir(Point.of(target.x - pos.x, target.y - pos.y));
 		return move(p, map, pos, dir);
 	}
 
-	private static List<Pair> findMoves(Map<Pair, Character> map, Set<Pair> visited, Pair pos) {
-		List<Pair> moves = new ArrayList<>();
+	private static List<Point> findMoves(Map<Point, Character> map, Set<Point> visited, Point pos) {
+		List<Point> moves = new ArrayList<>();
 		for (int i = 1; i < 5; i++) {
-			Pair delta = toPair(i);
-			Pair target = Pair.of(pos.x + delta.x, pos.y + delta.y);
+			Point delta = toPair(i);
+			Point target = Point.of(pos.x + delta.x, pos.y + delta.y);
 			if (map.containsKey(target) && map.get(target) == '.') {
 				moves.add(target);
 			}
@@ -156,15 +156,15 @@ public class Day15 {
 		return moves;
 	}
 
-	private static void peek(Parser p, Map<Pair, Character> map, Pair pos, int dir) {
+	private static void peek(Parser p, Map<Point, Character> map, Point pos, int dir) {
 
-		Pair prev = Pair.of(pos.x, pos.y);
-		Pair target = move(p, map, pos, dir);
+		Point prev = Point.of(pos.x, pos.y);
+		Point target = move(p, map, pos, dir);
 
 		if (!prev.equals(target)) {
 			// go back, we're only peeking
 
-			Pair delta = Pair.of(target.x - prev.x, target.y - prev.y);
+			Point delta = Point.of(target.x - prev.x, target.y - prev.y);
 			int dir2 = reverse(toDir(delta));
 			move(p, map, target, dir2);
 		}
@@ -184,10 +184,10 @@ public class Day15 {
 		return -1;
 	}
 
-	private static Pair move(Parser p, Map<Pair, Character> map, Pair pos, int dir) {
+	private static Point move(Parser p, Map<Point, Character> map, Point pos, int dir) {
 
-		Pair mov = toPair(dir);
-		Pair target = Pair.of(pos.x + mov.x, pos.y + mov.y);
+		Point mov = toPair(dir);
+		Point target = Point.of(pos.x + mov.x, pos.y + mov.y);
 
 		p.input(String.valueOf(dir));
 		p.run();
@@ -215,39 +215,39 @@ public class Day15 {
 		return pos;
 	}
 
-	private static Pair toPair(int dir) {
+	private static Point toPair(int dir) {
 
-		Pair mov = null;
+		Point mov = null;
 
 		if (dir == 1) {
 			// north
-			mov = Pair.of(0, -1);
+			mov = Point.of(0, -1);
 		} else if (dir == 2) {
 			// south
-			mov = Pair.of(0, 1);
+			mov = Point.of(0, 1);
 		} else if (dir == 3) {
 			// west
-			mov = Pair.of(-1, 0);
+			mov = Point.of(-1, 0);
 		} else if (dir == 4) {
 			// east
-			mov = Pair.of(1, 0);
+			mov = Point.of(1, 0);
 		}
 
 		return mov;
 	}
 
-	private static int toDir(Pair pair) {
+	private static int toDir(Point pair) {
 
-		if (Pair.of(0, -1).equals(pair)) {
+		if (Point.of(0, -1).equals(pair)) {
 			// north
 			return 1;
-		} else if (Pair.of(0, 1).equals(pair)) {
+		} else if (Point.of(0, 1).equals(pair)) {
 			// south
 			return 2;
-		} else if (Pair.of(-1, 0).equals(pair)) {
+		} else if (Point.of(-1, 0).equals(pair)) {
 			// west
 			return 3;
-		} else if (Pair.of(1, 0).equals(pair)) {
+		} else if (Point.of(1, 0).equals(pair)) {
 			// east
 			return 4;
 		}
@@ -256,10 +256,10 @@ public class Day15 {
 
 	}
 
-	private static char[][] getGrid(Map<Pair, Character> map) {
-		Pair[] minMax = PairUtils.getMinAndMax(map.keySet());
-		Pair min = minMax[0];
-		Pair max = minMax[1];
+	private static char[][] getGrid(Map<Point, Character> map) {
+		Point[] minMax = PointUtils.getMinAndMax(map.keySet());
+		Point min = minMax[0];
+		Point max = minMax[1];
 
 		int offsetY = Math.abs(min.y);
 		int offsetX = Math.abs(min.x);
@@ -274,24 +274,24 @@ public class Day15 {
 			}
 		}
 
-		for (Entry<Pair, Character> e : map.entrySet()) {
-			Pair pos1 = e.getKey();
+		for (Entry<Point, Character> e : map.entrySet()) {
+			Point pos1 = e.getKey();
 			grid[pos1.y + offsetY][pos1.x + offsetX] = e.getValue();
 		}
 
 		return grid;
 	}
 
-	private static void print(Map<Pair, Character> map) {
+	private static void print(Map<Point, Character> map) {
 		char[][] grid = getGrid(map);
 		StringUtils.print2Darray(grid);
 	}
 
-	private static void printState(Map<Pair, Character> map, Pair pos, List<Pair> moves, Stack<Pair> positions) {
+	private static void printState(Map<Point, Character> map, Point pos, List<Point> moves, Stack<Point> positions) {
 		if (!moves.isEmpty()) {
-			Map<Pair, Character> printMap = new HashMap<>(map);
+			Map<Point, Character> printMap = new HashMap<>(map);
 			printMap.put(pos, 'x');
-			for (Pair m : moves) {
+			for (Point m : moves) {
 				printMap.put(m, '!');
 			}
 
@@ -305,9 +305,9 @@ public class Day15 {
 		}
 	}
 
-	private static Map<Pair, Character> readExample() {
+	private static Map<Point, Character> readExample() {
 
-		Map<Pair, Character> map = new HashMap<>();
+		Map<Point, Character> map = new HashMap<>();
 
 		List<String> lines = FileUtils.read("aoc19/015-example");
 
@@ -323,7 +323,7 @@ public class Day15 {
 					if (c == 'O') {
 						c = 'T';
 					}
-					map.put(Pair.of(x, y), c);
+					map.put(Point.of(x, y), c);
 				}
 
 			}

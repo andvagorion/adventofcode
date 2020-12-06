@@ -3,7 +3,7 @@ package net.stefangaertner.aoc19;
 import java.io.IOException;
 import java.util.List;
 
-import net.stefangaertner.aoc18.pojo.Pair;
+import net.stefangaertner.aoc18.pojo.Point;
 import net.stefangaertner.aoc19.util.Parser;
 import net.stefangaertner.util.FileUtils;
 
@@ -40,7 +40,7 @@ public class Day19 {
 
 		int y = 100;
 		int offset = 0;
-		Pair found = null;
+		Point found = null;
 
 		outer: while (y < 1000) {
 			y++;
@@ -71,7 +71,7 @@ public class Day19 {
 					}
 
 					if (checkDown && checkRight) {
-						found = Pair.of(x, y);
+						found = Point.of(x, y);
 						break outer;
 					}
 

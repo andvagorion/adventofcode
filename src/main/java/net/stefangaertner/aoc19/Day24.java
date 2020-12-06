@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import net.stefangaertner.aoc18.pojo.Pair;
+import net.stefangaertner.aoc18.pojo.Point;
 import net.stefangaertner.util.ArrayUtils;
 import net.stefangaertner.util.FileUtils;
 import net.stefangaertner.util.GridUtils;
@@ -20,10 +20,10 @@ public class Day24 {
 	private static final int SIZE = 5;
 
 	private static final int CENTER = (SIZE - 1) / 2;
-	private static final Pair OUTER_TOP = Pair.of(CENTER, CENTER - 1);
-	private static final Pair OUTER_LEFT = Pair.of(CENTER - 1, CENTER);
-	private static final Pair OUTER_RIGHT = Pair.of(CENTER + 1, CENTER);
-	private static final Pair OUTER_BOTTOM = Pair.of(CENTER, CENTER + 1);
+	private static final Point OUTER_TOP = Point.of(CENTER, CENTER - 1);
+	private static final Point OUTER_LEFT = Point.of(CENTER - 1, CENTER);
+	private static final Point OUTER_RIGHT = Point.of(CENTER + 1, CENTER);
+	private static final Point OUTER_BOTTOM = Point.of(CENTER, CENTER + 1);
 
 	public static void main(String[] strings) throws IOException {
 
@@ -76,13 +76,13 @@ public class Day24 {
 	private static Map<Integer, boolean[][]> runMultidimensional(Map<Integer, boolean[][]> levels) {
 
 		// get outer edge cells
-		Set<Pair> outerEdges = getOuterCells();
+		Set<Point> outerEdges = getOuterCells();
 
 		// get inner edge cells
-		Set<Pair> innerEdges = getInnerCells();
+		Set<Point> innerEdges = getInnerCells();
 
 		// get all other cells
-		Set<Pair> otherCells = getOtherCells(outerEdges, innerEdges);
+		Set<Point> otherCells = getOtherCells(outerEdges, innerEdges);
 
 		// clone current state
 		Map<Integer, boolean[][]> ret = new TreeMap<>();
@@ -102,7 +102,7 @@ public class Day24 {
 	}
 
 	private static void walk(Map<Integer, boolean[][]> levels, int i, Map<Integer, boolean[][]> ret,
-			Set<Pair> outerEdges, Set<Pair> innerEdges, Set<Pair> otherCells) {
+			Set<Point> outerEdges, Set<Point> innerEdges, Set<Point> otherCells) {
 
 		boolean[][] currentLevel = levels.get(i);
 		boolean[][] nextLevel = ret.get(i);
@@ -111,11 +111,11 @@ public class Day24 {
 		boolean[][] inner = levels.get(i + 1);
 
 		// consider only cells on edges, compare with outer
-		for (Pair cell : outerEdges) {
+		for (Point cell : outerEdges) {
 
-			Set<Pair> checkInUpper = getCellsToCheckInOuter(cell);
+			Set<Point> checkInUpper = getCellsToCheckInOuter(cell);
 
-			int innerNeighbors = ArrayUtils.countNeighbors(currentLevel, Pair.of(cell.x, cell.y), b -> b);
+			int innerNeighbors = ArrayUtils.countNeighbors(currentLevel, Point.of(cell.x, cell.y), b -> b);
 			int outerNeighbors = (int) checkInUpper.stream().filter(c -> outer[c.y][c.x]).count();
 
 			boolean nextState = nextState(currentLevel[cell.y][cell.x], innerNeighbors + outerNeighbors);
@@ -124,11 +124,11 @@ public class Day24 {
 		}
 
 		// consider only cells on inner edge of outer grid, compare with inner
-		for (Pair cell : innerEdges) {
+		for (Point cell : innerEdges) {
 
-			Set<Pair> checkInInner = getCellsToCheckInInner(cell);
+			Set<Point> checkInInner = getCellsToCheckInInner(cell);
 
-			int outerNeighbors = ArrayUtils.countNeighbors(currentLevel, Pair.of(cell.x, cell.y), b -> b);
+			int outerNeighbors = ArrayUtils.countNeighbors(currentLevel, Point.of(cell.x, cell.y), b -> b);
 			int innerNeighbors = (int) checkInInner.stream().filter(c -> inner[c.y][c.x]).count();
 
 			boolean nextState = nextState(currentLevel[cell.y][cell.x], innerNeighbors + outerNeighbors);
@@ -137,16 +137,16 @@ public class Day24 {
 		}
 
 		// consider all cells that have been missed (apart from center cell)
-		for (Pair cell : otherCells) {
-			int neighbors = ArrayUtils.countNeighbors(currentLevel, Pair.of(cell.x, cell.y), b -> b);
+		for (Point cell : otherCells) {
+			int neighbors = ArrayUtils.countNeighbors(currentLevel, Point.of(cell.x, cell.y), b -> b);
 			boolean nextState = nextState(currentLevel[cell.y][cell.x], neighbors);
 			nextLevel[cell.y][cell.x] = nextState;
 		}
 
 	}
 
-	private static Set<Pair> getOtherCells(Set<Pair> outerEdges, Set<Pair> innerEdges) {
-		Set<Pair> cells = new HashSet<>();
+	private static Set<Point> getOtherCells(Set<Point> outerEdges, Set<Point> innerEdges) {
+		Set<Point> cells = new HashSet<>();
 
 		int center = (SIZE - 1) / 2;
 
@@ -157,7 +157,7 @@ public class Day24 {
 					continue;
 				}
 
-				Pair cell = Pair.of(x, y);
+				Point cell = Point.of(x, y);
 				if (!outerEdges.contains(cell) && !innerEdges.contains(cell)) {
 					cells.add(cell);
 				}
@@ -167,38 +167,38 @@ public class Day24 {
 		return cells;
 	}
 
-	private static Set<Pair> getCellsToCheckInInner(Pair cell) {
-		Set<Pair> cells = new HashSet<>();
+	private static Set<Point> getCellsToCheckInInner(Point cell) {
+		Set<Point> cells = new HashSet<>();
 
 		if (OUTER_TOP.equals(cell)) {
 			for (int x = 0; x < SIZE; x++) {
-				cells.add(Pair.of(x, 0));
+				cells.add(Point.of(x, 0));
 			}
 		}
 
 		if (OUTER_BOTTOM.equals(cell)) {
 			for (int x = 0; x < SIZE; x++) {
-				cells.add(Pair.of(x, SIZE - 1));
+				cells.add(Point.of(x, SIZE - 1));
 			}
 		}
 
 		if (OUTER_LEFT.equals(cell)) {
 			for (int y = 0; y < SIZE; y++) {
-				cells.add(Pair.of(0, y));
+				cells.add(Point.of(0, y));
 			}
 		}
 
 		if (OUTER_RIGHT.equals(cell)) {
 			for (int y = 0; y < SIZE; y++) {
-				cells.add(Pair.of(SIZE - 1, y));
+				cells.add(Point.of(SIZE - 1, y));
 			}
 		}
 
 		return cells;
 	}
 
-	private static Set<Pair> getCellsToCheckInOuter(Pair cell) {
-		Set<Pair> cells = new HashSet<>();
+	private static Set<Point> getCellsToCheckInOuter(Point cell) {
+		Set<Point> cells = new HashSet<>();
 
 		if (cell.y == 0) {
 			cells.add(OUTER_TOP);
@@ -224,13 +224,13 @@ public class Day24 {
 		return levels.get(i);
 	}
 
-	private static Set<Pair> getOuterCells() {
-		Set<Pair> edgeCells = new HashSet<>();
+	private static Set<Point> getOuterCells() {
+		Set<Point> edgeCells = new HashSet<>();
 
 		for (int y = 0; y < SIZE; y++) {
 			for (int x = 0; x < SIZE; x++) {
 				if (y == 0 || x == 0 || y == SIZE - 1 || x == SIZE - 1) {
-					edgeCells.add(Pair.of(x, y));
+					edgeCells.add(Point.of(x, y));
 				}
 			}
 		}
@@ -238,8 +238,8 @@ public class Day24 {
 		return edgeCells;
 	}
 
-	private static Set<Pair> getInnerCells() {
-		Set<Pair> edgeCells = new HashSet<>();
+	private static Set<Point> getInnerCells() {
+		Set<Point> edgeCells = new HashSet<>();
 
 		int center = (SIZE - 1) / 2;
 
@@ -252,7 +252,7 @@ public class Day24 {
 				boolean bottom = x == center && y == center + 1;
 
 				if (top || left || right || bottom) {
-					edgeCells.add(Pair.of(x, y));
+					edgeCells.add(Point.of(x, y));
 				}
 			}
 		}
@@ -326,7 +326,7 @@ public class Day24 {
 	}
 
 	private static boolean calc(boolean[][] grid, int x, int y) {
-		int livingNeighbors = ArrayUtils.countNeighbors(grid, Pair.of(x, y), b -> b);
+		int livingNeighbors = ArrayUtils.countNeighbors(grid, Point.of(x, y), b -> b);
 		return nextState(grid[y][x], livingNeighbors);
 	}
 

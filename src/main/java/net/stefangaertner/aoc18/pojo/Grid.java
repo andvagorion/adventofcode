@@ -4,9 +4,9 @@ import java.util.Stack;
 
 public class Grid {
 
-	Stack<Pair> positions = new Stack<>();
+	Stack<Point> positions = new Stack<>();
 
-	private Pair offset = new Pair(0, 0);
+	private Point offset = new Point(0, 0);
 
 	public char[][] grid;
 	
@@ -15,12 +15,12 @@ public class Grid {
 	public Grid() {
 		grid = createGrid(size, size);
 		grid[size / 2][size / 2] = 'X';
-		positions.push(new Pair(size / 2, size / 2));
+		positions.push(new Point(size / 2, size / 2));
 	}
 
 	public void move(Direction dir) {
 		
-		Pair refPos = positions.peek();
+		Point refPos = positions.peek();
 
 //		System.out.println("currently at " + (refPos.x + offset.x) + ", " + (refPos.y + offset.y) + " in " + grid.length
 //				+ ", " + grid[0].length + " moving " + dir);
@@ -42,18 +42,18 @@ public class Grid {
 		}
 		
 		if (dir.equals(Direction.UP)) {
-			_move(refPos, new Pair(0, -1));
+			_move(refPos, new Point(0, -1));
 		} else if (dir.equals(Direction.DOWN)) {
-			_move(refPos, new Pair(0, 1));
+			_move(refPos, new Point(0, 1));
 		} else if (dir.equals(Direction.LEFT)) {
-			_move(refPos, new Pair(-1, 0));
+			_move(refPos, new Point(-1, 0));
 		} else if (dir.equals(Direction.RIGHT)) {
-			_move(refPos, new Pair(1, 0));
+			_move(refPos, new Point(1, 0));
 		}
 
 	}
 
-	private void _move(Pair refPos, Pair dir) {
+	private void _move(Point refPos, Point dir) {
 		refPos.y += dir.y;
 		refPos.x += dir.x;
 		char door = dir.x != 0 ? '|' : '-';
@@ -81,8 +81,8 @@ public class Grid {
 	}
 
 	public void push() {
-		Pair current = this.positions.peek();
-		this.positions.push(new Pair(current.x, current.y));
+		Point current = this.positions.peek();
+		this.positions.push(new Point(current.x, current.y));
 	}
 
 	public void pop() {

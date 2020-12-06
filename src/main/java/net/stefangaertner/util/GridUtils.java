@@ -10,7 +10,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import net.stefangaertner.aoc18.pojo.Pair;
+import net.stefangaertner.aoc18.pojo.Point;
 
 public class GridUtils {
 
@@ -109,37 +109,37 @@ public class GridUtils {
 		return sum;
 	}
 
-	public static Pair find(char[][] grid, char toFind) {
+	public static Point find(char[][] grid, char toFind) {
 		for (int y = 0; y < grid.length; y++) {
 			char[] row = grid[y];
 			for (int x = 0; x < row.length; x++) {
 				char c = grid[y][x];
 				if (c == toFind) {
-					return Pair.of(x, y);
+					return Point.of(x, y);
 				}
 			}
 		}
 		return null;
 	}
 
-	public static List<Pair> getNeighboringPairs(Pair center) {
+	public static List<Point> getNeighboringPairs(Point center) {
 
-		List<Pair> pairs = new ArrayList<>();
-		pairs.add(Pair.of(-1, 0));
-		pairs.add(Pair.of(1, 0));
-		pairs.add(Pair.of(0, -1));
-		pairs.add(Pair.of(0, 1));
+		List<Point> pairs = new ArrayList<>();
+		pairs.add(Point.of(-1, 0));
+		pairs.add(Point.of(1, 0));
+		pairs.add(Point.of(0, -1));
+		pairs.add(Point.of(0, 1));
 
-		return pairs.stream().map(p -> Pair.of(p.x + center.x, p.y + center.y)).collect(Collectors.toList());
+		return pairs.stream().map(p -> Point.of(p.x + center.x, p.y + center.y)).collect(Collectors.toList());
 	}
 
-	public static List<Pair> findNeighbors(char[][] grid, Pair center, Predicate<Character> predicate) {
+	public static List<Point> findNeighbors(char[][] grid, Point center, Predicate<Character> predicate) {
 
-		List<Pair> pairs = getNeighboringPairs(center);
+		List<Point> pairs = getNeighboringPairs(center);
 
-		List<Pair> neighbors = new ArrayList<>();
+		List<Point> neighbors = new ArrayList<>();
 
-		for (Pair pair : pairs) {
+		for (Point pair : pairs) {
 			try {
 				char c = grid[pair.y][pair.x];
 				if (predicate.test(c)) {
@@ -153,26 +153,26 @@ public class GridUtils {
 		return neighbors;
 	}
 
-	public static Map<Pair, Integer> findReachable(char[][] grid, Pair coord, Predicate<Character> walkable,
+	public static Map<Point, Integer> findReachable(char[][] grid, Point coord, Predicate<Character> walkable,
 			Predicate<Character> unwalkable, Predicate<Character> target) {
 
-		Set<Pair> visited = new HashSet<>();
-		Map<Pair, Integer> reachable = new HashMap<>();
+		Set<Point> visited = new HashSet<>();
+		Map<Point, Integer> reachable = new HashMap<>();
 
 		findReachable(grid, coord, walkable, unwalkable, target, visited, reachable, 0);
 
 		return reachable;
 	}
 
-	private static void findReachable(char[][] grid, Pair coord, Predicate<Character> walkable,
-			Predicate<Character> unwalkable, Predicate<Character> target, Set<Pair> visited, Map<Pair, Integer> found,
+	private static void findReachable(char[][] grid, Point coord, Predicate<Character> walkable,
+			Predicate<Character> unwalkable, Predicate<Character> target, Set<Point> visited, Map<Point, Integer> found,
 			int tiles) {
 
 		visited.add(coord);
 
-		List<Pair> neighbors = findNeighbors(grid, coord, unwalkable.negate());
+		List<Point> neighbors = findNeighbors(grid, coord, unwalkable.negate());
 
-		for (Pair neighbor : neighbors) {
+		for (Point neighbor : neighbors) {
 
 			if (visited.contains(neighbor)) {
 				continue;
@@ -192,7 +192,7 @@ public class GridUtils {
 	}
 
 	public static void change(char[][] newGrid, char c, char d) {
-		Pair p = GridUtils.find(newGrid, c);
+		Point p = GridUtils.find(newGrid, c);
 		newGrid[p.y][p.x] = d;
 	}
 }

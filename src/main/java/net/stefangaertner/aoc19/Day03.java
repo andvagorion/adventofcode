@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import net.stefangaertner.aoc18.pojo.Pair;
+import net.stefangaertner.aoc18.pojo.Point;
 import net.stefangaertner.util.FileUtils;
 
 public class Day03 {
@@ -22,36 +22,36 @@ public class Day03 {
 
 	public static void part2(List<String[]> inputs) {
 		
-		List<List<Pair>> wires = new ArrayList<>();
+		List<List<Point>> wires = new ArrayList<>();
 
 		for (String[] input : inputs) {
-			List<Pair> points = new ArrayList<>();
+			List<Point> points = new ArrayList<>();
 
-			Pair current = new Pair(0, 0);
+			Point current = new Point(0, 0);
 			points.add(current);
 
 			for (String s : input) {
 
-				Pair move = null;
+				Point move = null;
 				int times = Integer.parseInt(s.substring(1));
 
 				switch (s.charAt(0)) {
 				case 'R':
-					move = new Pair(1, 0);
+					move = new Point(1, 0);
 					break;
 				case 'L':
-					move = new Pair(-1, 0);
+					move = new Point(-1, 0);
 					break;
 				case 'U':
-					move = new Pair(0, -1);
+					move = new Point(0, -1);
 					break;
 				case 'D':
-					move = new Pair(0, 1);
+					move = new Point(0, 1);
 					break;
 				}
 
 				for (int i = 0; i < times; i++) {
-					current = new Pair(current.x + move.x, current.y + move.y);
+					current = new Point(current.x + move.x, current.y + move.y);
 					points.add(current);
 				}
 
@@ -60,13 +60,13 @@ public class Day03 {
 			wires.add(points);
 		}
 
-		List<Pair> first = wires.get(0);
-		List<Pair> second = wires.get(1);
-		Set<Pair> intersections = getIntersections(inputs);
+		List<Point> first = wires.get(0);
+		List<Point> second = wires.get(1);
+		Set<Point> intersections = getIntersections(inputs);
 		
 		int total = Integer.MAX_VALUE;
 		
-		for (Pair p : intersections) {
+		for (Point p : intersections) {
 			if (p.x == 0 && p.y == 0) {
 				// ignore 0,0
 				continue;
@@ -85,11 +85,11 @@ public class Day03 {
 
 	public static void part1(List<String[]> input) {
 		
-		Set<Pair> intersections = getIntersections(input);
+		Set<Point> intersections = getIntersections(input);
 
 		int minDist = Integer.MAX_VALUE;
 		
-		for (Pair p : intersections) {
+		for (Point p : intersections) {
 			if (p.x == 0 && p.y == 0) {
 				// ignore 0,0
 				continue;
@@ -104,37 +104,37 @@ public class Day03 {
 		System.out.println("Part 1: " + minDist);
 	}
 
-	public static Set<Pair> getIntersections(List<String[]> inputs) {
-		List<Set<Pair>> wires = new ArrayList<>();
+	public static Set<Point> getIntersections(List<String[]> inputs) {
+		List<Set<Point>> wires = new ArrayList<>();
 
 		for (String[] input : inputs) {
-			Set<Pair> points = new HashSet<>();
+			Set<Point> points = new HashSet<>();
 
-			Pair current = new Pair(0, 0);
+			Point current = new Point(0, 0);
 			points.add(current);
 
 			for (String s : input) {
 
-				Pair move = null;
+				Point move = null;
 				int times = Integer.parseInt(s.substring(1));
 
 				switch (s.charAt(0)) {
 				case 'R':
-					move = new Pair(1, 0);
+					move = new Point(1, 0);
 					break;
 				case 'L':
-					move = new Pair(-1, 0);
+					move = new Point(-1, 0);
 					break;
 				case 'U':
-					move = new Pair(0, -1);
+					move = new Point(0, -1);
 					break;
 				case 'D':
-					move = new Pair(0, 1);
+					move = new Point(0, 1);
 					break;
 				}
 
 				for (int i = 0; i < times; i++) {
-					current = new Pair(current.x + move.x, current.y + move.y);
+					current = new Point(current.x + move.x, current.y + move.y);
 					points.add(current);
 				}
 
@@ -143,8 +143,8 @@ public class Day03 {
 			wires.add(points);
 		}
 
-		Set<Pair> first = wires.get(0);
-		Set<Pair> second = wires.get(1);
+		Set<Point> first = wires.get(0);
+		Set<Point> second = wires.get(1);
 
 		first.retainAll(second);
 

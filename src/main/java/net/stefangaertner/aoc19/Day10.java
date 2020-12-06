@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Comparator;
 
-import net.stefangaertner.aoc18.pojo.Pair;
+import net.stefangaertner.aoc18.pojo.Point;
 import net.stefangaertner.util.FileUtils;
 import net.stefangaertner.util.StringUtils;
 
 public class Day10 {
 
-	static Pair chosenPart2 = new Pair(27, 19);
+	static Point chosenPart2 = new Point(27, 19);
 
 	public static void main(String[] strings) {
 		List<String> lines = FileUtils.read("aoc19/010-data");
@@ -20,16 +20,16 @@ public class Day10 {
 	
 	private static void part1(List<String> lines) {
 
-		List<Pair> asteroids = getAsteroidsFromGrid(lines);
+		List<Point> asteroids = getAsteroidsFromGrid(lines);
 
-		Pair best = null;
+		Point best = null;
 		int max = 0;
 
 		for (int i = 0; i < asteroids.size(); i++) {
 
-			Pair curr = asteroids.get(i);
+			Point curr = asteroids.get(i);
 
-			List<Pair> whatCurrentCanSee = new ArrayList<>();
+			List<Point> whatCurrentCanSee = new ArrayList<>();
 			int canSee = 0;
 
 			inner: for (int j = 0; j < asteroids.size(); j++) {
@@ -38,7 +38,7 @@ public class Day10 {
 					continue;
 				}
 
-				Pair other = asteroids.get(j);
+				Point other = asteroids.get(j);
 
 				double angle1 = Math.atan2(other.y - curr.y, other.x - curr.x) * 180 / Math.PI;
 				double dist1 = Math
@@ -48,7 +48,7 @@ public class Day10 {
 					if (i == k || k == j) {
 						continue;
 					}
-					Pair test = asteroids.get(k);
+					Point test = asteroids.get(k);
 
 					double angle2 = Math.atan2(test.y - curr.y, test.x - curr.x) * 180 / Math.PI;
 					double dist2 = Math
@@ -78,17 +78,17 @@ public class Day10 {
 	
 	private static void part2(List<String> lines) {
 		
-		List<Pair> asteroids = getAsteroidsFromGrid(lines);
+		List<Point> asteroids = getAsteroidsFromGrid(lines);
 		
-		Pair chosen = chosenPart2;
+		Point chosen = chosenPart2;
 		asteroids.remove(chosen);
 		
 		// sort by angle, sort by distance
-		Comparator<Pair> byAngle = Comparator.comparing(a -> getAngle(chosen, a));
-		Comparator<Pair> byDistance = Comparator.comparing(a -> getDist(chosen, a));
+		Comparator<Point> byAngle = Comparator.comparing(a -> getAngle(chosen, a));
+		Comparator<Point> byDistance = Comparator.comparing(a -> getDist(chosen, a));
 		asteroids.sort(byAngle.thenComparing(byDistance));
 		
-		List<Pair> vaporized = new ArrayList<>();
+		List<Point> vaporized = new ArrayList<>();
 		int i = 0;
 		double minAngle = 0 - Math.PI / 2;
 		
@@ -111,7 +111,7 @@ public class Day10 {
 				i = 0;
 			}
 			
-			Pair a = asteroids.get(i);
+			Point a = asteroids.get(i);
 			
 			double angle = getAngle(chosen, a);
 			if (angle == currentAngle) {
@@ -129,19 +129,19 @@ public class Day10 {
 		}
 		
 		// clear the rest
-		for (Pair a : asteroids) {
+		for (Point a : asteroids) {
 			vaporized.add(a);
 			// System.out.println("#" + c + " " + a);
 			c++;
 		}
 		
-		Pair p = vaporized.get(199);
+		Point p = vaporized.get(199);
 		
 		System.out.println("Part 2: " + (p.x * 100 + p.y));
 	}
 	
-	private static boolean onlySameAngle(List<Pair> asteroids, Pair center, double currentAngle) {
-		for (Pair a : asteroids) {
+	private static boolean onlySameAngle(List<Point> asteroids, Point center, double currentAngle) {
+		for (Point a : asteroids) {
 			if (getAngle(center, a) != currentAngle) {
 				return false;
 			}
@@ -149,16 +149,16 @@ public class Day10 {
 		return true;
 	}
 
-	private static double getAngle(Pair pair, Pair other) {
+	private static double getAngle(Point pair, Point other) {
 		return Math.atan2(other.y - pair.y, other.x - pair.x);
 	}
 
-	private static double getDist(Pair pair, Pair other) {
+	private static double getDist(Point pair, Point other) {
 		return Math.sqrt((other.x - pair.x) * (other.x - pair.x) + (other.y - pair.y) * (other.y - pair.y));
 	}
 
-	private static List<Pair> getAsteroidsFromGrid(List<String> lines) {
-		List<Pair> asteroids = new ArrayList<>();
+	private static List<Point> getAsteroidsFromGrid(List<String> lines) {
+		List<Point> asteroids = new ArrayList<>();
 
 		for (int y = 0; y < lines.size(); y++) {
 
@@ -168,7 +168,7 @@ public class Day10 {
 
 				char c = line.charAt(x);
 				if (c == '#') {
-					asteroids.add(new Pair(x, y));
+					asteroids.add(new Point(x, y));
 				}
 
 			}
@@ -178,7 +178,7 @@ public class Day10 {
 		return asteroids;
 	}
 
-	private static void debugPrint(List<String> lines, Pair curr, List<Pair> whatCurrentCanSee) {
+	private static void debugPrint(List<String> lines, Point curr, List<Point> whatCurrentCanSee) {
 		int ym = lines.size();
 		int xm = lines.get(0).length();
 
@@ -191,7 +191,7 @@ public class Day10 {
 		}
 
 		grid[curr.y][curr.x] = 'X';
-		for (Pair p : whatCurrentCanSee) {
+		for (Point p : whatCurrentCanSee) {
 			grid[p.y][p.x] = 'O';
 		}
 

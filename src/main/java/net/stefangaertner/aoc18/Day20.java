@@ -8,7 +8,7 @@ import java.util.List;
 import net.stefangaertner.aoc18.pojo.Direction;
 import net.stefangaertner.aoc18.pojo.Grid;
 import net.stefangaertner.aoc18.pojo.Node;
-import net.stefangaertner.aoc18.pojo.Pair;
+import net.stefangaertner.aoc18.pojo.Point;
 import net.stefangaertner.util.FileUtils;
 import net.stefangaertner.util.StringUtils;
 
@@ -30,27 +30,27 @@ public class Day20 {
 	}
 
 	private static void walk(char[][] grid) {
-		List<Node<Pair>> nodes = new ArrayList<>();
+		List<Node<Point>> nodes = new ArrayList<>();
 	
-		Pair start = findStart(grid);
+		Point start = findStart(grid);
 		boolean[][] visited = initializeVisited(grid, start);
 	
-		Node<Pair> root = new Node<>(null, start);
+		Node<Point> root = new Node<>(null, start);
 	
 		// use flood fill / BFS
-		Deque<Node<Pair>> q = new ArrayDeque<>();
+		Deque<Node<Point>> q = new ArrayDeque<>();
 		q.addLast(root);
 	
 		while (!q.isEmpty()) {
 	
-			Node<Pair> node = q.removeFirst();
+			Node<Point> node = q.removeFirst();
 	
 			nodes.add(node);
 	
 			// moving up
 			if (node.data.y - 1 >= 0 && visited[node.data.y - 1][node.data.x] == false) {
-				Pair pos = new Pair(node.data.x, node.data.y - 1);
-				Node<Pair> child = new Node<>(node, pos);
+				Point pos = new Point(node.data.x, node.data.y - 1);
+				Node<Point> child = new Node<>(node, pos);
 				node.children.add(child);
 				q.addLast(child);
 				visited[child.data.y][child.data.x] = true;
@@ -58,8 +58,8 @@ public class Day20 {
 	
 			// moving left
 			if (node.data.x - 1 >= 0 && visited[node.data.y][node.data.x - 1] == false) {
-				Pair pos = new Pair(node.data.x - 1, node.data.y);
-				Node<Pair> child = new Node<>(node, pos);
+				Point pos = new Point(node.data.x - 1, node.data.y);
+				Node<Point> child = new Node<>(node, pos);
 				node.children.add(child);
 				q.addLast(child);
 				visited[child.data.y][child.data.x] = true;
@@ -67,8 +67,8 @@ public class Day20 {
 	
 			// moving right
 			if (node.data.x + 1 < grid[0].length && visited[node.data.y][node.data.x + 1] == false) {
-				Pair pos = new Pair(node.data.x + 1, node.data.y);
-				Node<Pair> child = new Node<>(node, pos);
+				Point pos = new Point(node.data.x + 1, node.data.y);
+				Node<Point> child = new Node<>(node, pos);
 				node.children.add(child);
 				q.addLast(child);
 				visited[child.data.y][child.data.x] = true;
@@ -76,8 +76,8 @@ public class Day20 {
 	
 			// moving down
 			if (node.data.y + 1 < grid.length && visited[node.data.y + 1][node.data.x] == false) {
-				Pair pos = new Pair(node.data.x, node.data.y + 1);
-				Node<Pair> child = new Node<>(node, pos);
+				Point pos = new Point(node.data.x, node.data.y + 1);
+				Node<Point> child = new Node<>(node, pos);
 				node.children.add(child);
 				q.addLast(child);
 				visited[child.data.y][child.data.x] = true;
@@ -88,7 +88,7 @@ public class Day20 {
 		int sum = 0;
 	
 		if (!nodes.isEmpty()) {
-			for (Node<Pair> node : nodes) {
+			for (Node<Point> node : nodes) {
 				int steps = node.depth() - 1;
 				if (steps > max) {
 					max = steps;
@@ -186,7 +186,7 @@ public class Day20 {
 		return ret;
 	}
 
-	private static void printSteps(char[][] grid, List<Node<Pair>> nodes) {
+	private static void printSteps(char[][] grid, List<Node<Point>> nodes) {
 		int max = 0;
 
 		String[][] stepGrid = new String[grid.length][];
@@ -200,7 +200,7 @@ public class Day20 {
 				} else {
 					final int x1 = x;
 					final int y1 = y;
-					Node<Pair> node = nodes.stream().filter(n -> n.data.x == x1 && n.data.y == y1).findFirst().get();
+					Node<Point> node = nodes.stream().filter(n -> n.data.x == x1 && n.data.y == y1).findFirst().get();
 					int depth = node.depth() - 1;
 					String xx = (depth < 10 ? " " : "") + String.valueOf(depth);
 					stepGrid[y][x] = xx;
@@ -226,7 +226,7 @@ public class Day20 {
 
 	}
 
-	private static boolean[][] initializeVisited(char[][] grid, Pair start) {
+	private static boolean[][] initializeVisited(char[][] grid, Point start) {
 		boolean[][] visited = new boolean[grid.length][grid[0].length];
 
 		// mark all walls as visited
@@ -249,12 +249,12 @@ public class Day20 {
 		return visited;
 	}
 
-	private static Pair findStart(char[][] grid) {
+	private static Point findStart(char[][] grid) {
 		for (int y = 0; y < grid.length; y++) {
 			char[] row = grid[y];
 			for (int x = 0; x < row.length; x++) {
 				if (row[x] == 'X') {
-					return new Pair(x, y);
+					return new Point(x, y);
 				}
 			}
 		}

@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import net.stefangaertner.aoc18.pojo.Pair;
+import net.stefangaertner.aoc18.pojo.Point;
 import net.stefangaertner.util.FileUtils;
 import net.stefangaertner.util.GridUtils;
 import net.stefangaertner.util.graph.Node;
@@ -33,17 +33,17 @@ public class Day18 {
 	}
 
 	private static void part1(char[][] grid) {
-		List<List<Pair>> solutions = new ArrayList<>();
+		List<List<Point>> solutions = new ArrayList<>();
 		solve(grid, new ArrayList<>(), solutions);
 
-		List<Pair> path = null;
+		List<Point> path = null;
 		int min = Integer.MAX_VALUE;
 
-		for (List<Pair> solution : solutions) {
+		for (List<Point> solution : solutions) {
 
 			int sum = 0;
 
-			for (Pair p : solution) {
+			for (Point p : solution) {
 				sum += p.y;
 			}
 
@@ -74,13 +74,13 @@ public class Day18 {
 
 		for (Node node : graph.getNodes()) {
 			char c = (char) node.getId();
-			Pair pos = GridUtils.find(grid, c);
+			Point pos = GridUtils.find(grid, c);
 
 			// flood fill, find all items and doors accessible from current position
-			Map<Pair, Integer> reachable = GridUtils.findReachable(grid, pos, isEmpty, isWall, isItem);
+			Map<Point, Integer> reachable = GridUtils.findReachable(grid, pos, isEmpty, isWall, isItem);
 
-			for (Map.Entry<Pair, Integer> tile : reachable.entrySet()) {
-				Pair pair = tile.getKey();
+			for (Map.Entry<Point, Integer> tile : reachable.entrySet()) {
+				Point pair = tile.getKey();
 				int dist = tile.getValue();
 
 				char c1 = grid[pair.y][pair.x];
@@ -96,7 +96,7 @@ public class Day18 {
 
 	private static long minimum = Integer.MAX_VALUE;
 
-	private static void solve(char[][] grid, List<Pair> visitedBefore, List<List<Pair>> solutions) {
+	private static void solve(char[][] grid, List<Point> visitedBefore, List<List<Point>> solutions) {
 
 		WeightedGraph graph = calculateGraph(grid);
 
@@ -120,14 +120,14 @@ public class Day18 {
 
 		for (Integer otherId : edges.keySet()) {
 
-			List<Pair> visited = new ArrayList<>(visitedBefore);
+			List<Point> visited = new ArrayList<>(visitedBefore);
 
 			int dist = edges.get(otherId);
 			char c1 = (char) otherId.intValue();
 
 			if (isKey.test(otherId) || (isDoor.test(otherId) && keyCollected(visited, otherId))) {
 
-				visited.add(Pair.of(otherId, dist));
+				visited.add(Point.of(otherId, dist));
 				char[][] newGrid = updateGrid(grid, c1);
 
 				solve(newGrid, visited, solutions);
@@ -138,7 +138,7 @@ public class Day18 {
 
 	}
 
-	private static boolean keyCollected(List<Pair> visited, Integer otherId) {
+	private static boolean keyCollected(List<Point> visited, Integer otherId) {
 		int key = (int) String.valueOf((char) otherId.intValue()).toLowerCase().charAt(0);
 		return visited.stream().map(p -> p.x).anyMatch(i -> i.intValue() == key);
 	}

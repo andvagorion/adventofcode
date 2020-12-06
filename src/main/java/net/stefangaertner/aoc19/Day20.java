@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import net.stefangaertner.aoc18.pojo.Pair;
+import net.stefangaertner.aoc18.pojo.Point;
 import net.stefangaertner.util.FileUtils;
 import net.stefangaertner.util.GridUtils;
 
@@ -25,7 +25,7 @@ public class Day20 {
 
 		char[][] grid = GridUtils.toGrid(lines);
 
-		Map<String, Pair> entries = parse(grid);
+		Map<String, Point> entries = parse(grid);
 
 		// find connected entries by flood fill
 		Map<String, Map<String, Integer>> connections = findConnections(lines, entries);
@@ -92,15 +92,15 @@ public class Day20 {
 		}
 	}
 
-	private static Map<String, Map<String, Integer>> findConnections(List<String> lines, Map<String, Pair> entries) {
+	private static Map<String, Map<String, Integer>> findConnections(List<String> lines, Map<String, Point> entries) {
 
 		Map<String, Map<String, Integer>> connections = new HashMap<>();
 
 		char c = '=';
 
-		for (Map.Entry<String, Pair> entry : entries.entrySet()) {
+		for (Map.Entry<String, Point> entry : entries.entrySet()) {
 
-			Pair val = entry.getValue();
+			Point val = entry.getValue();
 
 			char[][] grid = GridUtils.toGrid(lines);
 			grid[val.y][val.x] = c;
@@ -112,7 +112,7 @@ public class Day20 {
 			int i = 0;
 			while (true) {
 
-				List<Pair> toBeFilled = new ArrayList<>();
+				List<Point> toBeFilled = new ArrayList<>();
 
 				for (int y = 0; y < grid.length; y++) {
 					char[] row = grid[y];
@@ -121,17 +121,17 @@ public class Day20 {
 						if (grid[y][x] == c) {
 
 							if (shouldFill(grid, y - 1, x, c)) {
-								toBeFilled.add(Pair.of(x, y - 1));
+								toBeFilled.add(Point.of(x, y - 1));
 							}
 
 							if (shouldFill(grid, y, x - 1, c)) {
-								toBeFilled.add(Pair.of(x - 1, y));
+								toBeFilled.add(Point.of(x - 1, y));
 							}
 							if (shouldFill(grid, y, x + 1, c)) {
-								toBeFilled.add(Pair.of(x + 1, y));
+								toBeFilled.add(Point.of(x + 1, y));
 							}
 							if (shouldFill(grid, y + 1, x, c)) {
-								toBeFilled.add(Pair.of(x, y + 1));
+								toBeFilled.add(Point.of(x, y + 1));
 							}
 
 						}
@@ -144,11 +144,11 @@ public class Day20 {
 				if (!toBeFilled.isEmpty()) {
 					i++;
 
-					for (Pair p : toBeFilled) {
+					for (Point p : toBeFilled) {
 						grid[p.y][p.x] = c;
 					}
 
-					for (Map.Entry<String, Pair> e2 : entries.entrySet()) {
+					for (Map.Entry<String, Point> e2 : entries.entrySet()) {
 						if (toBeFilled.contains(e2.getValue())) {
 							connected.put(e2.getKey(), i);
 						}
@@ -177,9 +177,9 @@ public class Day20 {
 		return false;
 	}
 
-	private static Map<String, Pair> parse(char[][] grid) {
+	private static Map<String, Point> parse(char[][] grid) {
 
-		Map<String, Pair> entries = new HashMap<>();
+		Map<String, Point> entries = new HashMap<>();
 
 		for (int y = 0; y < grid.length; y++) {
 
@@ -193,7 +193,7 @@ public class Day20 {
 					if (entries.containsKey(name)) {
 						name += "2";
 					}
-					entries.put(name, new Pair(x, y));
+					entries.put(name, new Point(x, y));
 				}
 
 			}

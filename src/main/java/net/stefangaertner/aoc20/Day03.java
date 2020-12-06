@@ -3,7 +3,7 @@ package net.stefangaertner.aoc20;
 import java.util.Arrays;
 import java.util.List;
 
-import net.stefangaertner.aoc18.pojo.Pair;
+import net.stefangaertner.aoc18.pojo.Point;
 import net.stefangaertner.util.FileUtils;
 
 public class Day03 {
@@ -17,20 +17,20 @@ public class Day03 {
 		List<String> lines = FileUtils.read("aoc20/003");
 		char[][] grid = fromLines(lines);
 
-		return ride(grid, Pair.of(3, 1));
+		return ride(grid, Point.of(3, 1));
 	}
 
 	private static long part2() {
 		List<String> lines = FileUtils.read("aoc20/003");
 		char[][] grid = fromLines(lines);
 
-		List<Pair> slopes = Arrays.asList(Pair.of(1, 1), Pair.of(3, 1), Pair.of(5, 1), Pair.of(7, 1), Pair.of(1, 2));
+		List<Point> slopes = Arrays.asList(Point.of(1, 1), Point.of(3, 1), Point.of(5, 1), Point.of(7, 1), Point.of(1, 2));
 
 		return slopes.stream().map(slope -> ride(grid, slope)).reduce(1L, (a, b) -> a * b);
 	}
 
-	private static long ride(char[][] grid, Pair slope) {
-		Pair pos = Pair.of(0, 0);
+	private static long ride(char[][] grid, Point slope) {
+		Point pos = Point.of(0, 0);
 		long trees = 0;
 
 		while (pos.y < grid.length) {

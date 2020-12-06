@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import net.stefangaertner.aoc18.pojo.Pair;
+import net.stefangaertner.aoc18.pojo.Point;
 import net.stefangaertner.util.FileUtils;
 import net.stefangaertner.util.StringUtils;
 import net.stefangaertner.aoc19.util.Parser;
@@ -27,21 +27,21 @@ public class Day11 {
 	}
 
 	private static void part1(String code, boolean debugPrint) {
-		Map<Pair, String> visited = runRobot(code, "0", debugPrint);
+		Map<Point, String> visited = runRobot(code, "0", debugPrint);
 		System.out.println("Part 1: " + visited.size());
 	}
 
 	private static void part2(String code, boolean debugPrint) {
-		Map<Pair, String> visited = runRobot(code, "1", debugPrint);
+		Map<Point, String> visited = runRobot(code, "1", debugPrint);
 
 		if (debugPrint) {
 			System.out.println("Visited: " + visited.size());
 		}
 
-		Pair min = new Pair(0, 0);
-		Pair max = new Pair(0, 0);
+		Point min = new Point(0, 0);
+		Point max = new Point(0, 0);
 
-		for (Pair p : visited.keySet()) {
+		for (Point p : visited.keySet()) {
 			if (p.x < min.x) {
 				min.x = p.x;
 			}
@@ -75,8 +75,8 @@ public class Day11 {
 			StringUtils.print2Darray(image);
 		}
 
-		for (Entry<Pair, String> e : visited.entrySet()) {
-			Pair p = e.getKey();
+		for (Entry<Point, String> e : visited.entrySet()) {
+			Point p = e.getKey();
 			if (e.getValue().equals("1")) {
 				image[p.y + offsetY][p.x + offsetX] = 'X';
 			}
@@ -86,12 +86,12 @@ public class Day11 {
 		StringUtils.print2Darray(image);
 	}
 
-	private static Map<Pair, String> runRobot(String code, String initialPanelColor, boolean debugPrint) {
+	private static Map<Point, String> runRobot(String code, String initialPanelColor, boolean debugPrint) {
 
-		Pair dir = new Pair(0, -1);
-		Pair pos = new Pair(0, 0);
+		Point dir = new Point(0, -1);
+		Point pos = new Point(0, 0);
 
-		Map<Pair, String> visited = new HashMap<>();
+		Map<Point, String> visited = new HashMap<>();
 		visited.put(pos, initialPanelColor);
 
 		Parser p = Parser.create(code).stopOnOutput();
@@ -118,33 +118,33 @@ public class Day11 {
 			if ("0".equals(move)) {
 				// turn left
 
-				if (Pair.of(0, -1).equals(dir)) {
-					dir = Pair.of(-1, 0);
-				} else if (Pair.of(-1, 0).equals(dir)) {
-					dir = Pair.of(0, 1);
-				} else if (Pair.of(0, 1).equals(dir)) {
-					dir = Pair.of(1, 0);
-				} else if (Pair.of(1, 0).equals(dir)) {
-					dir = Pair.of(0, -1);
+				if (Point.of(0, -1).equals(dir)) {
+					dir = Point.of(-1, 0);
+				} else if (Point.of(-1, 0).equals(dir)) {
+					dir = Point.of(0, 1);
+				} else if (Point.of(0, 1).equals(dir)) {
+					dir = Point.of(1, 0);
+				} else if (Point.of(1, 0).equals(dir)) {
+					dir = Point.of(0, -1);
 				}
 
 			} else {
 				// turn right
 
-				if (Pair.of(0, -1).equals(dir)) {
-					dir = Pair.of(1, 0);
-				} else if (Pair.of(1, 0).equals(dir)) {
-					dir = Pair.of(0, 1);
-				} else if (Pair.of(0, 1).equals(dir)) {
-					dir = Pair.of(-1, 0);
-				} else if (Pair.of(-1, 0).equals(dir)) {
-					dir = Pair.of(0, -1);
+				if (Point.of(0, -1).equals(dir)) {
+					dir = Point.of(1, 0);
+				} else if (Point.of(1, 0).equals(dir)) {
+					dir = Point.of(0, 1);
+				} else if (Point.of(0, 1).equals(dir)) {
+					dir = Point.of(-1, 0);
+				} else if (Point.of(-1, 0).equals(dir)) {
+					dir = Point.of(0, -1);
 				}
 
 			}
 
 			// move robot
-			pos = Pair.of(pos.x + dir.x, pos.y + dir.y);
+			pos = Point.of(pos.x + dir.x, pos.y + dir.y);
 
 		}
 
