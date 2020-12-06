@@ -126,7 +126,7 @@ public class Day17 {
 		List<Pair> visited = new ArrayList<>();
 		List<String> commands = new ArrayList<>();
 
-		Pair pos = findPosition(grid);
+		Pair pos = GridUtils.find(grid, '^');
 		visited.add(pos);
 
 		// robot starts looking north
@@ -210,34 +210,6 @@ public class Day17 {
 		// assumption: paths never overlap direct in a corner
 
 		return neighbors;
-	}
-
-	private static Pair findPosition(char[][] grid) {
-		for (int y = 0; y < grid.length; y++) {
-			char[] row = grid[y];
-			for (int x = 0; x < row.length; x++) {
-				char c = grid[y][x];
-				if (c == '<' || c == '^' || c == 'v' || c == '>') {
-					return Pair.of(x, y);
-				}
-			}
-		}
-		return null;
-	}
-
-	private static Pair getDirection(char c) {
-		switch (c) {
-		case '^':
-			return Pair.of(0, -1);
-		case '>':
-			return Pair.of(1, 0);
-		case 'v':
-			return Pair.of(0, 1);
-		case '<':
-			return Pair.of(-1, 0);
-		default:
-			return null;
-		}
 	}
 
 	private static char[][] parseGrid(String code) {
