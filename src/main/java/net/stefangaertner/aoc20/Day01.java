@@ -7,7 +7,7 @@ import net.stefangaertner.util.FileUtils;
 
 public class Day01 {
 
-	private static int part1(List<String> lines) {
+	static long part1(List<String> lines) {
 		List<Integer> vals = lines.stream().map(Integer::valueOf).collect(Collectors.toList());
 		List<Integer> out = vals.stream()
 				.filter(i1 -> vals.stream().filter(i2 -> i1 + i2 == 2020).findAny().orElse(0) * i1 != 0)
@@ -15,7 +15,7 @@ public class Day01 {
 		return out.stream().reduce(1, (a, b) -> a * b);
 	}
 
-	private static int part2(List<String> lines) {
+	static long part2(List<String> lines) {
 		List<Integer> vals = lines.stream().map(Integer::valueOf).collect(Collectors.toList());
 		List<Integer> out = vals.stream()
 				.filter(i1 -> vals.stream()

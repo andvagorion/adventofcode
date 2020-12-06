@@ -9,19 +9,19 @@ import net.stefangaertner.util.FileUtils;
 public class Day03 {
 
 	public static void main(String[] args) {
-		System.out.println("Part 1: " + part1());
-		System.out.println("Part 2: " + part2());
+		List<String> lines = FileUtils.read("aoc20/003");
+		
+		System.out.println("Part 1: " + part1(lines));
+		System.out.println("Part 2: " + part2(lines));
 	}
 
-	private static long part1() {
-		List<String> lines = FileUtils.read("aoc20/003");
+	static long part1(List<String> lines) {
 		char[][] grid = fromLines(lines);
 
 		return ride(grid, Point.of(3, 1));
 	}
 
-	private static long part2() {
-		List<String> lines = FileUtils.read("aoc20/003");
+	static long part2(List<String> lines) {
 		char[][] grid = fromLines(lines);
 
 		List<Point> slopes = Arrays.asList(Point.of(1, 1), Point.of(3, 1), Point.of(5, 1), Point.of(7, 1), Point.of(1, 2));

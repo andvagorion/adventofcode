@@ -21,11 +21,11 @@ public class Day05 {
 		System.out.println(String.format("Part 2: %d", part2(lines)));
 	}
 
-	private static long part1(List<String> lines) {
+	static long part1(List<String> lines) {
 		return lines.stream().map(parse).map(getSeatId).max(Comparator.naturalOrder()).get();
 	}
 
-	private static long part2(List<String> lines) {
+	static long part2(List<String> lines) {
 		List<Integer> occupied = lines.stream().map(parse).map(getSeatId).collect(Collectors.toList());
 		
 		int minId = occupied.stream().min(Comparator.naturalOrder()).get();

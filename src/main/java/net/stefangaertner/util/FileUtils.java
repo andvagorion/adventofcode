@@ -32,6 +32,26 @@ public class FileUtils {
 
 		return result;
 	}
+	
+	public static List<List<String>> readGroups(String filename) {
+		List<String> lines = read(filename);
+		
+		List<List<String>> groups = new ArrayList<>();
+
+		List<String> current = new ArrayList<>();
+
+		for (String line : lines) {
+			if (line.isEmpty()) {
+				groups.add(current);
+				current = new ArrayList<>();
+				continue;
+			}
+
+			current.add(line);
+		}
+
+		return groups;
+	}
 
 	public static String readLine(String filename) {
 		List<String> result = read(filename);

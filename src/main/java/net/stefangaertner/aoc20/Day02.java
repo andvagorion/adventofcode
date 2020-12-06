@@ -46,11 +46,11 @@ public class Day02 {
 		return (pos1Char || pos2Char) && !(pos1Char && pos2Char);
 	};
 
-	private static long part1(List<String> lines) {
+	static long part1(List<String> lines) {
 		return lines.stream().filter(oldPolicy).count();
 	}
 
-	private static long part2(List<String> lines) {
+	static long part2(List<String> lines) {
 		return lines.stream().filter(newPolicy).count();
 	}
 

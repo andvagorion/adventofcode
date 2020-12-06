@@ -12,6 +12,7 @@ import net.stefangaertner.util.FileUtils;
 public class Day04 {
 
 	private static final List<String> fields = Arrays.asList("byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid", "cid");
+	
 	private static Predicate<Map<String, String>> isValid = pp -> {
 		if (pp.keySet().size() == fields.size()) {
 			return true;
@@ -104,19 +105,18 @@ public class Day04 {
 	};
 
 	public static void main(String[] args) {
-		System.out.println("Part 1: " + part1());
-		System.out.println("Part 2: " + part2());
-
+		List<String> lines = FileUtils.read("aoc20/004");
+		
+		System.out.println("Part 1: " + part1(lines));
+		System.out.println("Part 2: " + part2(lines));
 	}
 
-	private static long part1() {
-		List<String> lines = FileUtils.read("aoc20/004");
+	static long part1(List<String> lines) {
 		List<Map<String, String>> passports = parse(lines);
 		return passports.stream().filter(isValid).count();
 	}
 
-	private static long part2() {
-		List<String> lines = FileUtils.read("aoc20/004");
+	static long part2(List<String> lines) {
 		List<Map<String, String>> passports = parse(lines);
 		return passports.stream().filter(isValid.and(checkFields)).count();
 	}
