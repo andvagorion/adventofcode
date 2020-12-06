@@ -10,7 +10,7 @@ import net.stefangaertner.util.StringUtils;
 public class Day08 {
 
 	public static void main(String[] args) {
-		List<String> lines = FileUtils.read("aoc18/008-sample");
+		List<String> lines = FileUtils.read("aoc18/008-data");
 		String data = lines.get(0);
 
 		Packet root = computeTree(data);
