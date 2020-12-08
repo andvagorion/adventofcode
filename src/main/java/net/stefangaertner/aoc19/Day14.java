@@ -8,11 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Stack;
 
 import net.stefangaertner.aoc19.util.Reagent;
 import net.stefangaertner.util.FileUtils;
-import sun.misc.Queue;
 
 public class Day14 {
 
@@ -40,25 +38,25 @@ public class Day14 {
 		fifo.add(fuel);
 
 		Map<String, Integer> howManyAreNeeded = new HashMap<>();
-		
+
 		while (!fifo.isEmpty()) {
 
 			Reagent r = fifo.pop();
-			
+
 			System.out.println(r.name + " needs: ");
 
 			if (!r.isOre()) {
 
 				Entry<Reagent, Reagent[]> e = reactions.entrySet().stream()
 						.filter(r1 -> r1.getKey().name.equals(r.name)).findFirst().get();
-				
-				//int times = 
+
+				// int times =
 				Reagent[] needs = e.getValue();
-				
+
 				for (Reagent sub : needs) {
-				
+
 					howManyAreNeeded.put(e.getKey().name, 5);
-				
+
 					fifo.add(sub);
 
 					System.out.println("- " + sub.num + " " + sub.name);
