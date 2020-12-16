@@ -73,8 +73,16 @@ public class ArrayUtils {
 	}
 
 	public static List<Point> findNeighbors(char[][] grid, Point center, char c) {
+		return findNeighbors(grid, center, false, c);
+	}
 
-		List<Point> pairs = getNeighboringPairs(center);
+	public static List<Point> findNeighborsDiagonal(char[][] grid, Point center, char c) {
+		return findNeighbors(grid, center, true, c);
+	}
+
+	private static List<Point> findNeighbors(char[][] grid, Point center, boolean diagonal, char c) {
+
+		List<Point> pairs = getNeighboringPairs(center, diagonal);
 
 		List<Point> neighbors = new ArrayList<>();
 
@@ -92,7 +100,16 @@ public class ArrayUtils {
 	}
 
 	public static int countNeighbors(boolean[][] grid, Point center, Function<Boolean, Boolean> mapper) {
-		List<Point> pairs = getNeighboringPairs(center);
+		return countNeighbors(grid, center, false, mapper);
+	}
+
+	public static int countNeighborsDiagonal(boolean[][] grid, Point center, Function<Boolean, Boolean> mapper) {
+		return countNeighbors(grid, center, true, mapper);
+	}
+
+	private static int countNeighbors(boolean[][] grid, Point center, boolean diagonal,
+			Function<Boolean, Boolean> mapper) {
+		List<Point> pairs = getNeighboringPairs(center, diagonal);
 
 		return (int) pairs.stream().filter(p -> {
 			try {
@@ -101,32 +118,70 @@ public class ArrayUtils {
 				return false;
 			}
 		}).count();
-
 	}
 
-	private static List<Point> getNeighboringPairs(Point center) {
-
+	public static List<Point> getDirections(Point center, boolean diagonal) {
 		List<Point> pairs = new ArrayList<>();
+
 		pairs.add(Point.of(-1, 0));
 		pairs.add(Point.of(1, 0));
 		pairs.add(Point.of(0, -1));
 		pairs.add(Point.of(0, 1));
 
+		if (diagonal) {
+			pairs.add(Point.of(-1, -1));
+			pairs.add(Point.of(-1, 1));
+			pairs.add(Point.of(1, -1));
+			pairs.add(Point.of(1, 1));
+		}
+
+		return pairs;
+	}
+
+	private static List<Point> getNeighboringPairs(Point center, boolean diagonal) {
+		List<Point> pairs = getDirections(center, diagonal);
 		return pairs.stream().map(p -> Point.of(p.x + center.x, p.y + center.y)).collect(Collectors.toList());
 	}
 
 	public static <T> void print2Darray(T[] arr) {
-		if (arr == null)
+		if (arr == null) {
 			return;
+		}
 
 		System.out.println(Arrays.stream(arr).map(String::valueOf).collect(Collectors.joining(", ")));
 	}
 
 	public static void print(int[] arr) {
-		if (arr == null)
+		if (arr == null) {
 			return;
+		}
 
 		System.out.println(Arrays.stream(arr).mapToObj(String::valueOf).collect(Collectors.joining(", ")));
+	}
+
+	public static int countLineOfSight(char[][] grid, Point center, boolean diagonal, char c, char not) {
+		List<Point> directions = getDirections(center, diagonal);
+
+		int sum = 0;
+
+		for (Point dir : directions) {
+			Point curr = center.add(dir);
+
+			while (curr.y < grid.length && curr.y >= 0 && curr.x < grid[0].length && curr.x >= 0) {
+				if (grid[curr.y][curr.x] == not) {
+					break;
+				}
+
+				if (grid[curr.y][curr.x] == c) {
+					sum++;
+					break;
+				}
+
+				curr = curr.add(dir);
+			}
+		}
+
+		return sum;
 	}
 
 }

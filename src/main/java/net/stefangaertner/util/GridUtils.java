@@ -14,6 +14,18 @@ import net.stefangaertner.aoc18.pojo.Point;
 
 public class GridUtils {
 
+	public static boolean same(char[][] grid, char[][] other) {
+		for (int y = 0; y < grid.length; y++) {
+			for (int x = 0; x < grid[y].length; x++) {
+				if (!(grid[y][x] == other[y][x])) {
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+
 	public static char[][] createGrid(int width, int height, char c) {
 		char[][] grid = new char[height][];
 		for (int y = 0; y < height; y++) {
@@ -101,6 +113,20 @@ public class GridUtils {
 		for (int y = 0; y < grid.length; y++) {
 			for (int x = 0; x < grid[y].length; x++) {
 				if (predicate.test(grid[y][x])) {
+					sum++;
+				}
+			}
+		}
+
+		return sum;
+	}
+
+	public static int countValues(char[][] grid, char c) {
+		int sum = 0;
+
+		for (int y = 0; y < grid.length; y++) {
+			for (int x = 0; x < grid[y].length; x++) {
+				if (grid[y][x] == c) {
 					sum++;
 				}
 			}
