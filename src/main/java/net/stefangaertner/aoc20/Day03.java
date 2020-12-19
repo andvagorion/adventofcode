@@ -25,9 +25,12 @@ public class Day03 {
 		List<String> lines = FileUtils.read("aoc20/003");
 		char[][] grid = fromLines(lines);
 
-		List<Point> slopes = Arrays.asList(Point.of(1, 1), Point.of(3, 1), Point.of(5, 1), Point.of(7, 1), Point.of(1, 2));
+		List<Point> slopes = Arrays
+				.asList(Point.of(1, 1), Point.of(3, 1), Point.of(5, 1), Point.of(7, 1), Point.of(1, 2));
 
-		return slopes.stream().map(slope -> ride(grid, slope)).reduce(1L, (a, b) -> a * b);
+		return slopes.stream()
+				.map(slope -> ride(grid, slope))
+				.reduce(1L, (a, b) -> a * b);
 	}
 
 	private static long ride(char[][] grid, Point slope) {
@@ -47,14 +50,16 @@ public class Day03 {
 	}
 
 	private static char[][] fromLines(List<String> lines) {
-		int w = lines.get(0).length();
+		int w = lines.get(0)
+				.length();
 		int h = lines.size();
 
 		char[][] grid = new char[h][];
 		for (int y = 0; y < h; y++) {
 			grid[y] = new char[w];
 			for (int x = 0; x < w; x++) {
-				grid[y][x] = lines.get(y).charAt(x);
+				grid[y][x] = lines.get(y)
+						.charAt(x);
 			}
 		}
 

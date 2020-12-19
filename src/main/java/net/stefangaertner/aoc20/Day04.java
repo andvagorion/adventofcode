@@ -20,23 +20,31 @@ public class Day04 {
 	static long part1() {
 		List<String> lines = FileUtils.read("aoc20/004");
 		List<Map<String, String>> passports = parse(lines);
-		return passports.stream().filter(isValid).count();
+		return passports.stream()
+				.filter(isValid)
+				.count();
 	}
 
 	static long part2() {
 		List<String> lines = FileUtils.read("aoc20/004");
 		List<Map<String, String>> passports = parse(lines);
-		return passports.stream().filter(isValid.and(checkFields)).count();
+		return passports.stream()
+				.filter(isValid.and(checkFields))
+				.count();
 	}
 
 	private static final List<String> fields = Arrays.asList("byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid", "cid");
-	
+
 	private static Predicate<Map<String, String>> isValid = pp -> {
-		if (pp.keySet().size() == fields.size()) {
+		if (pp.keySet()
+				.size() == fields.size()) {
 			return true;
 		}
 
-		if (pp.keySet().size() == fields.size() - 1 && !pp.keySet().contains("cid")) {
+		if (pp.keySet()
+				.size() == fields.size() - 1
+				&& !pp.keySet()
+						.contains("cid")) {
 			return true;
 		}
 
@@ -95,7 +103,8 @@ public class Day04 {
 			return false;
 		}
 
-		return pp.get("hcl").matches("#[0-9a-f]{6}");
+		return pp.get("hcl")
+				.matches("#[0-9a-f]{6}");
 	};
 
 	// ecl (Eye Color) - exactly one of: amb blu brn gry grn hzl oth.
@@ -114,12 +123,18 @@ public class Day04 {
 			return false;
 		}
 
-		return pp.get("pid").matches("\\d{9}");
+		return pp.get("pid")
+				.matches("\\d{9}");
 	};
 
 	private static Predicate<Map<String, String>> checkFields = pp -> {
-		return isValidBirthYear.and(isValidIssueYear).and(isValidExpirationYear).and(isValidHeight)
-				.and(isValidHairColor).and(isValidEyeColor).and(isValidPassportId).test(pp);
+		return isValidBirthYear.and(isValidIssueYear)
+				.and(isValidExpirationYear)
+				.and(isValidHeight)
+				.and(isValidHairColor)
+				.and(isValidEyeColor)
+				.and(isValidPassportId)
+				.test(pp);
 	};
 
 	private static List<Map<String, String>> parse(List<String> lines) {
