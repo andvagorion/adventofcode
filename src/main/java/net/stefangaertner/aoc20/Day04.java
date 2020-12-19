@@ -7,9 +7,27 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
+import net.stefangaertner.util.Advent;
 import net.stefangaertner.util.FileUtils;
 
 public class Day04 {
+
+	public static void main(String[] args) {
+		Advent.print(1, part1());
+		Advent.print(2, part2());
+	}
+
+	static long part1() {
+		List<String> lines = FileUtils.read("aoc20/004");
+		List<Map<String, String>> passports = parse(lines);
+		return passports.stream().filter(isValid).count();
+	}
+
+	static long part2() {
+		List<String> lines = FileUtils.read("aoc20/004");
+		List<Map<String, String>> passports = parse(lines);
+		return passports.stream().filter(isValid.and(checkFields)).count();
+	}
 
 	private static final List<String> fields = Arrays.asList("byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid", "cid");
 	
@@ -103,23 +121,6 @@ public class Day04 {
 		return isValidBirthYear.and(isValidIssueYear).and(isValidExpirationYear).and(isValidHeight)
 				.and(isValidHairColor).and(isValidEyeColor).and(isValidPassportId).test(pp);
 	};
-
-	public static void main(String[] args) {
-		List<String> lines = FileUtils.read("aoc20/004");
-		
-		System.out.println("Part 1: " + part1(lines));
-		System.out.println("Part 2: " + part2(lines));
-	}
-
-	static long part1(List<String> lines) {
-		List<Map<String, String>> passports = parse(lines);
-		return passports.stream().filter(isValid).count();
-	}
-
-	static long part2(List<String> lines) {
-		List<Map<String, String>> passports = parse(lines);
-		return passports.stream().filter(isValid.and(checkFields)).count();
-	}
 
 	private static List<Map<String, String>> parse(List<String> lines) {
 		List<Map<String, String>> passports = new ArrayList<>();

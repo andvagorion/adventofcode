@@ -5,6 +5,14 @@ import java.util.regex.Pattern;
 
 public class RegexUtil {
 	
+	public static String first(String in, String pattern) {
+		return first(in, Pattern.compile(pattern));
+	}
+	
+	public static String second(String in, String pattern) {
+		return second(in, Pattern.compile(pattern));
+	}
+	
 	public static String first(String in, Pattern pattern) {
 		return group(in, pattern, 1);
 	}

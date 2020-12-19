@@ -3,10 +3,30 @@ package net.stefangaertner.aoc20;
 import java.util.List;
 import java.util.function.Predicate;
 
+import net.stefangaertner.util.Advent;
 import net.stefangaertner.util.FileUtils;
 import net.stefangaertner.util.StringUtils;
 
 public class Day02 {
+
+	public static void main(String[] args) {
+		Advent.print(1, part1());
+		Advent.print(2, part2());
+	}
+
+	static long part1() {
+		List<String> lines = FileUtils.read("aoc20/002");
+		return lines.stream()
+				.filter(oldPolicy)
+				.count();
+	}
+
+	static long part2() {
+		List<String> lines = FileUtils.read("aoc20/002");
+		return lines.stream()
+				.filter(newPolicy)
+				.count();
+	}
 
 	private static final String pattern = "^(\\d+)\\-(\\d+) (\\w)\\: (\\w+)";
 
@@ -45,22 +65,5 @@ public class Day02 {
 
 		return (pos1Char || pos2Char) && !(pos1Char && pos2Char);
 	};
-
-	static long part1(List<String> lines) {
-		return lines.stream().filter(oldPolicy).count();
-	}
-
-	static long part2(List<String> lines) {
-		return lines.stream().filter(newPolicy).count();
-	}
-
-	public static void main(String[] args) {
-
-		List<String> lines = FileUtils.read("aoc20/002");
-
-		System.out.println(String.format("Part 1: %d", part1(lines)));
-		System.out.println(String.format("Part 2: %d", part2(lines)));
-
-	}
 
 }

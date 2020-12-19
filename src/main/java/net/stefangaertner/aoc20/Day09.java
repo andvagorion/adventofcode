@@ -4,31 +4,44 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import net.stefangaertner.util.Advent;
 import net.stefangaertner.util.FileUtils;
 import net.stefangaertner.util.IntPair;
 
 public class Day09 {
 
 	public static void main(String[] args) {
-		List<String> lines = FileUtils.read("aoc20/009");
-
-		System.out.println(String.format("Part 1: %d", part1(lines)));
-		System.out.println(String.format("Part 2: %d", part2(lines)));
+		Advent.print(1, part1());
+		Advent.print(2, part2());
 	}
 
-	static long part1(List<String> lines) {
-		List<Long> numbers = lines.stream().map(s -> Long.valueOf(s)).collect(Collectors.toList());
+	static long part1() {
+		List<String> lines = FileUtils.read("aoc20/009");
+		List<Long> numbers = lines.stream()
+				.map(s -> Long.valueOf(s))
+				.collect(Collectors.toList());
 		return findOddOneOut(numbers, 25);
 	}
 
-	static long part2(List<String> lines) {
-		List<Long> numbers = lines.stream().map(s -> Long.valueOf(s)).collect(Collectors.toList());
+	static long part2() {
+		List<String> lines = FileUtils.read("aoc20/009");
+		List<Long> numbers = lines.stream()
+				.map(s -> Long.valueOf(s))
+				.collect(Collectors.toList());
 		long oddOne = findOddOneOut(numbers, 25);
 
 		IntPair range = findRange(numbers, oddOne);
 
-		long min = numbers.stream().skip(range.a).limit(range.b - range.a + 1).min(Comparator.naturalOrder()).get();
-		long max = numbers.stream().skip(range.a).limit(range.b - range.a + 1).max(Comparator.naturalOrder()).get();
+		long min = numbers.stream()
+				.skip(range.a)
+				.limit(range.b - range.a + 1)
+				.min(Comparator.naturalOrder())
+				.get();
+		long max = numbers.stream()
+				.skip(range.a)
+				.limit(range.b - range.a + 1)
+				.max(Comparator.naturalOrder())
+				.get();
 
 		return min + max;
 	}
@@ -68,7 +81,7 @@ public class Day09 {
 			}
 
 		}
-		
+
 		return null;
 	}
 

@@ -13,20 +13,18 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import net.stefangaertner.util.Advent;
 import net.stefangaertner.util.FileUtils;
 
 public class Day07 {
 
-	private static final String START = "shiny gold";
-
 	public static void main(String[] args) {
-		List<String> lines = FileUtils.read("aoc20/007");
-
-		System.out.println(String.format("Part 1: %d", part1(lines)));
-		System.out.println(String.format("Part 2: %d", part2(lines)));
+		Advent.print(1, part1());
+		Advent.print(2, part2());
 	}
 
-	static long part1(List<String> lines) {
+	static long part1() {
+		List<String> lines = FileUtils.read("aoc20/007");
 		Map<String, List<String>> map = new HashMap<>();
 		lines.forEach(str -> addEntry(map, str));
 
@@ -36,14 +34,19 @@ public class Day07 {
 		return bags.size();
 	}
 
-	static long part2(List<String> lines) {
-		Map<String, List<String>> bags = lines.stream().collect(Collectors.toMap(getColor, getList));
+	static long part2() {
+		List<String> lines = FileUtils.read("aoc20/007");
+		Map<String, List<String>> bags = lines.stream()
+				.collect(Collectors.toMap(getColor, getList));
 
 		List<Integer> nums = new ArrayList<>();
 		iterate(bags, (list) -> nums.add(list.size()));
 
-		return nums.stream().reduce(0, (a, b) -> a + b);
+		return nums.stream()
+				.reduce(0, (a, b) -> a + b);
 	}
+
+	private static final String START = "shiny gold";
 
 	private static void iterate(Map<String, List<String>> map, Consumer<List<String>> consumer) {
 		Stack<String> stack = new Stack<>();
@@ -76,7 +79,8 @@ public class Day07 {
 
 		List<String> list = new ArrayList<>();
 
-		String[] bags = matcher.group(2).split(", ");
+		String[] bags = matcher.group(2)
+				.split(", ");
 		for (String bag : bags) {
 			Matcher subMatcher = listPattern.matcher(bag);
 			subMatcher.matches();

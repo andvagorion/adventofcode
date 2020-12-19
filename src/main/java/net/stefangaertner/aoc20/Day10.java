@@ -9,19 +9,20 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import net.stefangaertner.util.Advent;
 import net.stefangaertner.util.FileUtils;
 
 public class Day10 {
 
 	public static void main(String[] args) {
-		List<String> lines = FileUtils.read("aoc20/010");
-
-		System.out.println(String.format("Part 1: %d", part1(lines)));
-		// System.out.println(String.format("Part 2: %d", part2(lines)));
+		Advent.print(1, part1());
 	}
 
-	static long part1(List<String> lines) {
-		Deque<Long> adapters = lines.stream().map(s -> Long.valueOf(s)).sorted()
+	static long part1() {
+		List<String> lines = FileUtils.read("aoc20/010");
+		Deque<Long> adapters = lines.stream()
+				.map(s -> Long.valueOf(s))
+				.sorted()
 				.collect(Collectors.toCollection(LinkedList::new));
 
 		// device always has joltage of 3 higher than highest adapter
@@ -43,8 +44,11 @@ public class Day10 {
 		return differences.getOrDefault(1L, 0L) * differences.getOrDefault(3L, 0L);
 	}
 
-	static long part2(List<String> lines) {
-		Deque<Long> adapters = lines.stream().map(s -> Long.valueOf(s)).sorted()
+	static long part2() {
+		List<String> lines = FileUtils.read("aoc20/010");
+		Deque<Long> adapters = lines.stream()
+				.map(s -> Long.valueOf(s))
+				.sorted()
 				.collect(Collectors.toCollection(LinkedList::new));
 		adapters.addFirst(0L);
 		adapters.addLast(adapters.getLast() + 3);
@@ -54,7 +58,9 @@ public class Day10 {
 
 		while (!adapters.isEmpty()) {
 			long val = adapters.pop();
-			Deque<Long> nums = adapters.stream().filter(j -> j > val && j <= val + 3).sorted()
+			Deque<Long> nums = adapters.stream()
+					.filter(j -> j > val && j <= val + 3)
+					.sorted()
 					.collect(Collectors.toCollection(LinkedList::new));
 
 			if (nums.size() == 2) {

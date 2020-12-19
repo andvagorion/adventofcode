@@ -32,10 +32,10 @@ public class FileUtils {
 
 		return result;
 	}
-	
+
 	public static List<List<String>> readGroups(String filename) {
 		List<String> lines = read(filename);
-		
+
 		List<List<String>> groups = new ArrayList<>();
 
 		List<String> current = new ArrayList<>();
@@ -50,16 +50,20 @@ public class FileUtils {
 			current.add(line);
 		}
 
+		if (!current.isEmpty()) {
+			groups.add(current);
+		}
+
 		return groups;
 	}
 
 	public static String readLine(String filename) {
 		List<String> result = read(filename);
-		
+
 		if (result.isEmpty()) {
 			return null;
 		}
-		
+
 		return result.get(0);
 	}
 

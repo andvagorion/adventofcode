@@ -6,33 +6,48 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import net.stefangaertner.util.Advent;
 import net.stefangaertner.util.FileUtils;
 import net.stefangaertner.util.IntPair;
 
 public class Day05 {
 
+	public static void main(String[] args) {
+		Advent.print(1, part1());
+		Advent.print(2, part2());
+	}
+
+	static long part1() {
+		List<String> lines = FileUtils.read("aoc20/005");
+		return lines.stream()
+				.map(parse)
+				.map(getSeatId)
+				.max(Comparator.naturalOrder())
+				.get();
+	}
+
+	static long part2() {
+		List<String> lines = FileUtils.read("aoc20/005");
+		List<Integer> occupied = lines.stream()
+				.map(parse)
+				.map(getSeatId)
+				.collect(Collectors.toList());
+
+		int minId = occupied.stream()
+				.min(Comparator.naturalOrder())
+				.get();
+		int maxId = occupied.stream()
+				.max(Comparator.naturalOrder())
+				.get();
+
+		return IntStream.range(minId, maxId + 1)
+				.filter(id -> !occupied.contains(id))
+				.findFirst()
+				.getAsInt();
+	}
+
 	private static final int ROWS = 128;
 	private static final int COLS = 8;
-
-	public static void main(String[] args) {
-		List<String> lines = FileUtils.read("aoc20/005");
-
-		System.out.println(String.format("Part 1: %d", part1(lines)));
-		System.out.println(String.format("Part 2: %d", part2(lines)));
-	}
-
-	static long part1(List<String> lines) {
-		return lines.stream().map(parse).map(getSeatId).max(Comparator.naturalOrder()).get();
-	}
-
-	static long part2(List<String> lines) {
-		List<Integer> occupied = lines.stream().map(parse).map(getSeatId).collect(Collectors.toList());
-		
-		int minId = occupied.stream().min(Comparator.naturalOrder()).get();
-		int maxId = occupied.stream().max(Comparator.naturalOrder()).get();
-		
-		return IntStream.range(minId, maxId + 1).filter(id -> !occupied.contains(id)).findFirst().getAsInt();
-	}
 
 	// multiply the row by 8, then add the column
 	private static Function<IntPair, Integer> getSeatId = pair -> pair.a * 8 + pair.b;
@@ -44,14 +59,16 @@ public class Day05 {
 	};
 
 	private static int binSearch(String str, int from, int to, char left, char right) {
-		return str.chars().mapToObj(i -> (char) i).reduce(IntPair.of(from, to), (curr, c) -> {
-			if (c == left) {
-				return IntPair.of(curr.a, curr.a + (curr.b - curr.a) / 2);
-			} else if (c == right) {
-				return IntPair.of(curr.a + (curr.b - curr.a) / 2, curr.b);
-			}
-			return curr;
-		}, (a, b) -> a = b).a;
+		return str.chars()
+				.mapToObj(i -> (char) i)
+				.reduce(IntPair.of(from, to), (curr, c) -> {
+					if (c == left) {
+						return IntPair.of(curr.a, curr.a + (curr.b - curr.a) / 2);
+					} else if (c == right) {
+						return IntPair.of(curr.a + (curr.b - curr.a) / 2, curr.b);
+					}
+					return curr;
+				}, (a, b) -> a = b).a;
 	}
 
 }

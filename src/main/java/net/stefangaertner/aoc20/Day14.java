@@ -9,22 +9,20 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import net.stefangaertner.util.Advent;
 import net.stefangaertner.util.FileUtils;
 import net.stefangaertner.util.RegexUtil;
 import net.stefangaertner.util.StringUtils;
 
 public class Day14 {
 
-	private static Pattern memPattern = Pattern.compile("mem\\[(\\d+)\\] = (\\d+)");
-
 	public static void main(String[] args) {
-		List<String> lines = FileUtils.read("aoc20/014");
-
-		System.out.println(String.format("Part 1: %d", part1(lines)));
-		System.out.println(String.format("Part 2: %d", part2(lines)));
+		Advent.print(1, part1());
+		Advent.print(2, part2());
 	}
 
-	static long part1(List<String> lines) {
+	static long part1() {
+		List<String> lines = FileUtils.read("aoc20/014");
 		Map<Integer, Long> memory = new HashMap<>();
 		String mask = null;
 
@@ -34,7 +32,7 @@ public class Day14 {
 				mask = line.split(" = ")[1];
 
 			} else {
-				
+
 				int memoryBank = Integer.parseInt(RegexUtil.first(line, memPattern));
 				String bin = toBinary(RegexUtil.second(line, memPattern));
 
@@ -43,21 +41,14 @@ public class Day14 {
 			}
 		}
 
-		return memory.values().stream().collect(Collectors.summarizingLong(l -> l)).getSum();
+		return memory.values()
+				.stream()
+				.collect(Collectors.summarizingLong(l -> l))
+				.getSum();
 	}
 
-	private static String toBinary(String str) {
-		long value = Long.parseLong(str);
-		String bin = StringUtils.fillWith(Long.toBinaryString(value), 36, '0');
-		return bin;
-	}
-
-	private static long mask1(String bin, String mask) {
-		String masked = _mask(bin, mask, 'X');
-		return new BigInteger(masked, 2).longValue();
-	}
-
-	static long part2(List<String> lines) {
+	static long part2() {
+		List<String> lines = FileUtils.read("aoc20/014");
 		Map<Long, Long> memory = new HashMap<>();
 		String mask = null;
 
@@ -70,40 +61,56 @@ public class Day14 {
 
 				long value = Long.parseLong(RegexUtil.second(line, memPattern));
 				String bin = toBinary(RegexUtil.first(line, memPattern));
-				
+
 				Set<Long> memoryBanks = mask2(bin, mask);
-				
+
 				memoryBanks.forEach(memoryBank -> {
 					memory.put(memoryBank, value);
 				});
-				
+
 			}
 		}
 
-		return memory.values().stream().collect(Collectors.summarizingLong(l -> l)).getSum();
+		return memory.values()
+				.stream()
+				.collect(Collectors.summarizingLong(l -> l))
+				.getSum();
+	}
+
+	private static Pattern memPattern = Pattern.compile("mem\\[(\\d+)\\] = (\\d+)");
+
+	private static String toBinary(String str) {
+		long value = Long.parseLong(str);
+		String bin = StringUtils.fillWith(Long.toBinaryString(value), 36, '0');
+		return bin;
+	}
+
+	private static long mask1(String bin, String mask) {
+		String masked = _mask(bin, mask, 'X');
+		return new BigInteger(masked, 2).longValue();
 	}
 
 	private static Set<Long> mask2(String bin, String mask) {
 		String masked = _mask(bin, mask, '0');
 		return floating(masked);
 	}
-	
+
 	private static Set<Long> floating(String current) {
 		Set<Long> set = new HashSet<>();
-		
+
 		int idx = current.indexOf('X');
-		
+
 		if (idx == -1) {
 			set.add(new BigInteger(current, 2).longValue());
 			return set;
 		}
-		
+
 		set.addAll(floating(current.replaceFirst("X", "0")));
 		set.addAll(floating(current.replaceFirst("X", "1")));
-		
+
 		return set;
 	}
-	
+
 	private static String _mask(String bin, String mask, char unchanged) {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < mask.length(); i++) {
@@ -113,7 +120,7 @@ public class Day14 {
 				sb.append(mask.charAt(i));
 			}
 		}
-		
+
 		return sb.toString();
 	}
 }

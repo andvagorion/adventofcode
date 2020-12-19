@@ -3,11 +3,13 @@ package net.stefangaertner.aoc20;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.stefangaertner.util.Advent;
+
 public class Day15 {
 
 	public static void main(String[] args) {
-		System.out.println(String.format("Part 1: %d", part1()));
-		System.out.println(String.format("Part 2: %d", part2()));
+		Advent.print(1, part1());
+		Advent.print(2, part2());
 	}
 
 	static long part1() {

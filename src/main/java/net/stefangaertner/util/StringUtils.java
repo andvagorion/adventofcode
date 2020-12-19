@@ -1,5 +1,7 @@
 package net.stefangaertner.util;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -101,6 +103,17 @@ public class StringUtils {
 
 		int groups = m.groupCount();
 		return IntStream.range(1, groups + 1).mapToObj(i -> m.group(i)).toArray(size -> new String[size]);
+	}
+
+	public static Set<Integer> getNumbersFromString(String str, String divider) {
+		Set<Integer> out = new HashSet<>();
+		String[] parts = str.split(divider);
+		for (String part : parts) {
+			if (part.matches("\\d+")) {
+				out.add(Integer.parseInt(part));
+			}
+		}
+		return out;
 	}
 
 }
