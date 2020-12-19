@@ -19,8 +19,7 @@ public class Day13 {
 	}
 
 	static long part1() {
-		List<String> lines = FileUtils.read("aoc19/013-data");
-		String code = lines.get(0);
+		String code = FileUtils.readLine("aoc19/013-data");
 
 		Parser p = Parser.create(code)
 				.run();
@@ -56,8 +55,7 @@ public class Day13 {
 				file = "aoc19/013-data-more-walls";
 			}
 
-			List<String> lines = FileUtils.read(file);
-			String code = lines.get(0);
+			String code = FileUtils.readLine(file);
 
 			// screen is 36 x 24
 			TileType[][] grid = new TileType[24][];

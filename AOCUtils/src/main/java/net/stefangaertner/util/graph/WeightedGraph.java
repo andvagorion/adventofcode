@@ -36,5 +36,16 @@ public class WeightedGraph {
 	public Map<Integer, Integer> getEdges(int id) {
 		return this.edges.get(id);
 	}
+	
+	public void debugPrint() {
+		for (Node node : this.getNodes()) {
+			System.out.println(node.getLabel());
+			Map<Integer, Integer> edges = this.getEdges(node);
+			for (Map.Entry<Integer, Integer> edge : edges.entrySet()) {
+				Node other = this.getNode(edge.getKey());
+				System.out.println("- " + other.getLabel() + "(" + edge.getValue() + ")");
+			}
+		}
+	}
 
 }

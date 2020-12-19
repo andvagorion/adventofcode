@@ -7,7 +7,6 @@ import java.util.List;
 import net.stefangaertner.util.Advent;
 import net.stefangaertner.util.FileUtils;
 import net.stefangaertner.util.Point2D;
-import net.stefangaertner.util.StringUtils;
 
 public class Day10 {
 
@@ -23,7 +22,6 @@ public class Day10 {
 
 		List<Point2D> asteroids = getAsteroidsFromGrid(lines);
 
-		Point2D best = null;
 		int max = 0;
 
 		for (int i = 0; i < asteroids.size(); i++) {
@@ -67,15 +65,12 @@ public class Day10 {
 			}
 
 			if (canSee > max) {
-				best = curr;
 				max = canSee;
 			}
 
 		}
 
 		return max;
-		// or best?
-
 	}
 
 	static long part2() {
@@ -173,27 +168,6 @@ public class Day10 {
 		}
 
 		return asteroids;
-	}
-
-	private static void debugPrint(List<String> lines, Point2D curr, List<Point2D> whatCurrentCanSee) {
-		int ym = lines.size();
-		int xm = lines.get(0)
-				.length();
-
-		char[][] grid = new char[ym][];
-		for (int y = 0; y < ym; y++) {
-			grid[y] = new char[xm];
-			for (int x = 0; x < xm; x++) {
-				grid[y][x] = '.';
-			}
-		}
-
-		grid[curr.y][curr.x] = 'X';
-		for (Point2D p : whatCurrentCanSee) {
-			grid[p.y][p.x] = 'O';
-		}
-
-		StringUtils.print2Darray(grid);
 	}
 
 }

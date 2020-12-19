@@ -79,6 +79,7 @@ public class Day12 {
 		return moons;
 	}
 
+	@SuppressWarnings("unused")
 	private static List<Moon> getExample1() {
 		List<Moon> moons = new ArrayList<>();
 		moons.add(new Moon(-1, 0, 2));
@@ -88,6 +89,7 @@ public class Day12 {
 		return moons;
 	}
 
+	@SuppressWarnings("unused")
 	private static List<Moon> getExample2() {
 		List<Moon> moons = new ArrayList<>();
 		moons.add(new Moon(-8, -10, 0));

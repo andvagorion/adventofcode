@@ -25,8 +25,7 @@ public class Day20 {
 	private static long part2 = -1;
 
 	static long part1() {
-		List<String> lines = FileUtils.read("aoc18/020-data");
-		String line = lines.get(0);
+		String line = FileUtils.readLine("aoc18/020-data");
 
 		Grid gridObj = new Grid();
 		char[] input = line.toCharArray();

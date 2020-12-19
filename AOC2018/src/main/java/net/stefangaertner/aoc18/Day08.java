@@ -1,7 +1,6 @@
 package net.stefangaertner.aoc18;
 
 import java.util.Arrays;
-import java.util.List;
 
 import net.stefangaertner.aoc18.pojo.Packet;
 import net.stefangaertner.util.Advent;
@@ -16,16 +15,14 @@ public class Day08 {
 	}
 
 	static long part1() {
-		List<String> lines = FileUtils.read("aoc18/008-data");
-		String data = lines.get(0);
+		String data = FileUtils.readLine("aoc18/008-data");
 		Packet root = computeTree(data);
 
 		return getSum(root);
 	}
 
 	static long part2() {
-		List<String> lines = FileUtils.read("aoc18/008-data");
-		String data = lines.get(0);
+		String data = FileUtils.readLine("aoc18/008-data");
 		Packet root = computeTree(data);
 
 		return getOtherSum(root);

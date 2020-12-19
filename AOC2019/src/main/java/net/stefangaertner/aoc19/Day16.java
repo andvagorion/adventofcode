@@ -1,30 +1,21 @@
 package net.stefangaertner.aoc19;
 
-import java.io.IOException;
 import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Collectors;
 
+import net.stefangaertner.util.Advent;
 import net.stefangaertner.util.FileUtils;
 
 public class Day16 {
 
-	private static int[] basePattern = new int[] { 0, 1, 0, -1 };
-
-	public static void main(String[] strings) throws IOException {
-
+	public static void main(String[] strings) {
+		Advent.print(1, part1());
 	}
 
 	static long part1() {
+		String input = FileUtils.readLine("aoc19/016-data");
 
-		List<String> lines = FileUtils.read("aoc19/016-data");
-		String inputStr = lines.get(0);
-
-//		System.out.println(getFirst8(calc("80871224585914546619083218645595", 100)));
-//		System.out.println(getFirst8(calc("19617804207202209144916044189917", 100)));
-//		System.out.println(getFirst8(calc("69317163492948606335995924319873", 100)));
-
-		String str = getFirst8(calc(inputStr, 100));
+		String str = getFirst8(calc(input, 100));
 		return Long.valueOf(str);
 	}
 
@@ -33,9 +24,6 @@ public class Day16 {
 		int[] arr2 = new int[arr1.length];
 
 		for (int times = 0; times < phases; times++) {
-
-//			long start = System.currentTimeMillis();
-//			System.out.print("running iteration " + (times + 1));
 
 			boolean swapped = times % 2 == 1;
 
@@ -51,7 +39,6 @@ public class Day16 {
 				while (pointer < in.length) {
 
 					for (int i = pointer; i < pointer + (phase + 1) && i < in.length; i++) {
-						// System.out.println("adding " + in[i]);
 						sum += in[i];
 					}
 
@@ -63,7 +50,6 @@ public class Day16 {
 				while (pointer < in.length) {
 
 					for (int i = pointer; i < pointer + (phase + 1) && i < in.length; i++) {
-						// System.out.println("subtracting " + in[i]);
 						sum -= in[i];
 					}
 
@@ -75,17 +61,10 @@ public class Day16 {
 
 			}
 
-//			long end = System.currentTimeMillis();
-//			System.out.println(" " + (end - start) + " ms");
 		}
 
 		return (phases % 2 == 0) ? arr1 : arr2;
 
-	}
-
-	private static int getOffset(String inputStr) {
-		String offsetStr = inputStr.substring(0, 7);
-		return Integer.parseInt(offsetStr);
 	}
 
 	private static int[] parse(String string) {

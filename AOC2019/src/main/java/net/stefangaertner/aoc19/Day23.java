@@ -20,8 +20,7 @@ public class Day23 {
 	}
 
 	static long part1() {
-		List<String> lines = FileUtils.read("aoc19/023-data");
-		String code = lines.get(0);
+		String code = FileUtils.readLine("aoc19/023-data");
 		boolean debugPrint = false;
 
 		Map<Integer, Parser> hosts = new HashMap<>();
@@ -87,8 +86,7 @@ public class Day23 {
 	}
 
 	static long part2() {
-		List<String> lines = FileUtils.read("aoc19/023-data");
-		String code = lines.get(0);
+		String code = FileUtils.readLine("aoc19/023-data");
 		boolean debugPrint = false;
 
 		Map<Integer, Parser> hosts = new HashMap<>();

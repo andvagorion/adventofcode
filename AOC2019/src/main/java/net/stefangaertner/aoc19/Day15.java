@@ -80,9 +80,7 @@ public class Day15 {
 	}
 
 	private static Map<Point2D, Character> explore() {
-
-		List<String> lines = FileUtils.read("aoc19/015-data");
-		String code = lines.get(0);
+		String code = FileUtils.readLine("aoc19/015-data");
 
 		Map<Point2D, Character> map = new HashMap<>();
 		Parser p = Parser.create(code)
@@ -99,9 +97,7 @@ public class Day15 {
 
 		Point2D prevPos = Point2D.of(-1, -1);
 
-		int steps = 0;
 		while (true) {
-			steps++;
 			prevPos = pos.copy();
 
 			// reveal the surrounding map
@@ -302,11 +298,7 @@ public class Day15 {
 		return grid;
 	}
 
-	private static void print(Map<Point2D, Character> map) {
-		char[][] grid = getGrid(map);
-		StringUtils.print2Darray(grid);
-	}
-
+	@SuppressWarnings("unused")
 	private static void printState(Map<Point2D, Character> map, Point2D pos, List<Point2D> moves,
 			Stack<Point2D> positions) {
 		if (!moves.isEmpty()) {
@@ -326,6 +318,7 @@ public class Day15 {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private static Map<Point2D, Character> readExample() {
 
 		Map<Point2D, Character> map = new HashMap<>();

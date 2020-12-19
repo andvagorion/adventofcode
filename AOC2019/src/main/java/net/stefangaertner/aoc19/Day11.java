@@ -1,7 +1,6 @@
 package net.stefangaertner.aoc19;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
@@ -20,8 +19,7 @@ public class Day11 {
 	}
 
 	static long part1() {
-		List<String> lines = FileUtils.read("aoc19/011-data");
-		String code = lines.get(0);
+		String code = FileUtils.readLine("aoc19/011-data");
 
 		Map<Point2D, String> visited = runRobot(code, "0", false);
 
@@ -29,8 +27,7 @@ public class Day11 {
 	}
 
 	static String part2() {
-		List<String> lines = FileUtils.read("aoc19/011-data");
-		String code = lines.get(0);
+		String code = FileUtils.readLine("aoc19/011-data");
 
 		boolean debugPrint = false;
 

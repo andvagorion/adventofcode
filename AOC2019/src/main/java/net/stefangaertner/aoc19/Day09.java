@@ -1,7 +1,5 @@
 package net.stefangaertner.aoc19;
 
-import java.util.List;
-
 import net.stefangaertner.aoc19.util.Parser;
 import net.stefangaertner.util.Advent;
 import net.stefangaertner.util.FileUtils;
@@ -18,8 +16,7 @@ public class Day09 {
 	}
 
 	static long part1() {
-		List<String> lines = FileUtils.read("aoc19/009-data");
-		String code = lines.get(0);
+		String code = FileUtils.readLine("aoc19/009-data");
 
 		Parser p = Parser.create(code)
 				.input("1")
@@ -29,8 +26,7 @@ public class Day09 {
 	}
 
 	static long part2() {
-		List<String> lines = FileUtils.read("aoc19/009-data");
-		String code = lines.get(0);
+		String code = FileUtils.readLine("aoc19/009-data");
 
 		Parser p = Parser.create(code)
 				.input("2")

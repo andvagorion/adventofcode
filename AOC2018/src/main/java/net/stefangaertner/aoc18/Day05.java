@@ -16,8 +16,7 @@ public class Day05 {
 	}
 
 	static long part1() {
-		List<String> lines = FileUtils.read("aoc18/005-data");
-		String input = lines.get(0);
+		String input = FileUtils.readLine("aoc18/005-data");
 
 		List<Character> characters = input.chars()
 				.mapToObj(i -> (char) i)
@@ -28,14 +27,12 @@ public class Day05 {
 	}
 
 	static long part2() {
-		List<String> lines = FileUtils.read("aoc18/005-data");
-		String input = lines.get(0);
+		String input = FileUtils.readLine("aoc18/005-data");
 
 		List<Character> characters = input.chars()
 				.mapToObj(i -> (char) i)
 				.collect(Collectors.toList());
 
-		char c1 = '-';
 		int min = input.length();
 
 		// System.out.print("Checking... ");
@@ -59,14 +56,9 @@ public class Day05 {
 
 			if (size < min) {
 				min = size;
-				c1 = StringUtils.ALPHABET.charAt(i);
 			}
 
-			// System.out.print("(" + size + ") ");
 		}
-
-		// System.out.println("#2 Minimum length produced by removing " + c1 + " => " +
-		// min);
 
 		return min;
 	}

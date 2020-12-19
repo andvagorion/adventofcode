@@ -1,7 +1,6 @@
 package net.stefangaertner.aoc19;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import net.stefangaertner.util.Advent;
@@ -9,7 +8,7 @@ import net.stefangaertner.util.FileUtils;
 
 public class Day08 {
 
-	private static String example1 = "123456789012";
+	private static final boolean DEBUG = false;
 
 	public static void main(String[] strings) {
 		Advent.print(1, part1());
@@ -17,8 +16,7 @@ public class Day08 {
 	}
 
 	static long part1() {
-		List<String> lines = FileUtils.read("aoc19/008-data1");
-		String image = lines.get(0);
+		String image = FileUtils.readLine("aoc19/008-data1");
 
 		// find layer with fewest '0' digits
 		long minZeroes = Integer.MAX_VALUE;
@@ -54,8 +52,7 @@ public class Day08 {
 	}
 
 	static String part2() {
-		List<String> lines = FileUtils.read("aoc19/008-data1");
-		String image = lines.get(0);
+		String image = FileUtils.readLine("aoc19/008-data1");
 
 		int width = 25;
 		int height = 6;
@@ -64,6 +61,9 @@ public class Day08 {
 		char white = '0';
 
 		int[][][] decoded = decode(image, width, height);
+
+		if (DEBUG)
+			print(decoded);
 
 		int layers = decoded.length;
 
@@ -91,7 +91,6 @@ public class Day08 {
 		}
 
 		System.out.println(sb.toString());
-		;
 		return "EBZUR";
 	}
 

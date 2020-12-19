@@ -163,15 +163,4 @@ public class Day18 {
 		return newGrid;
 	}
 
-	private static void debugPrint(WeightedGraph graph) {
-		for (Node node : graph.getNodes()) {
-			System.out.println(node.getLabel());
-			Map<Integer, Integer> edges = graph.getEdges(node);
-			for (Map.Entry<Integer, Integer> edge : edges.entrySet()) {
-				Node other = graph.getNode(edge.getKey());
-				System.out.println("- " + other.getLabel() + "(" + edge.getValue() + ")");
-			}
-		}
-	}
-
 }

@@ -45,37 +45,11 @@ public class Vector2D {
 	}
 
 	public Vector2D turnRight() {
-		if (Vector2D.of(0, -1)
-				.equals(this)) {
-			return Vector2D.of(1, 0);
-		} else if (Vector2D.of(1, 0)
-				.equals(this)) {
-			return Vector2D.of(0, 1);
-		} else if (Vector2D.of(0, 1)
-				.equals(this)) {
-			return Vector2D.of(-1, 0);
-		} else if (Vector2D.of(-1, 0)
-				.equals(this)) {
-			return Vector2D.of(0, -1);
-		}
-		return null;
+		return Vector2D.of(this.y, -this.x);
 	}
 
 	public Vector2D turnLeft() {
-		if (Vector2D.of(0, -1)
-				.equals(this)) {
-			return Vector2D.of(-1, 0);
-		} else if (Vector2D.of(-1, 0)
-				.equals(this)) {
-			return Vector2D.of(0, 1);
-		} else if (Vector2D.of(0, 1)
-				.equals(this)) {
-			return Vector2D.of(1, 0);
-		} else if (Vector2D.of(1, 0)
-				.equals(this)) {
-			return Vector2D.of(0, -1);
-		}
-		return null;
+		return Vector2D.of(-this.y, this.x);
 	}
 
 	public Vector2D add(Vector2D delta) {

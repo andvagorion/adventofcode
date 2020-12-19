@@ -63,9 +63,7 @@ public class Day25 {
 	}
 
 	static long part1() {
-
-		List<String> lines = FileUtils.read("aoc19/025-data");
-		String code = lines.get(0);
+		String code = FileUtils.readLine("aoc19/025-data");
 
 		// List<String> combination = bruteForceCombination(code);
 
@@ -97,6 +95,7 @@ public class Day25 {
 		return Long.valueOf(result);
 	}
 
+	@SuppressWarnings("unused")
 	private static List<String> bruteForceCombination(String code) {
 		Parser p = Parser.create(code)
 				.stopOnInput();
@@ -142,6 +141,7 @@ public class Day25 {
 		return null;
 	}
 
+	@SuppressWarnings("unused")
 	private static void switchToManual(Parser p) throws IOException {
 
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {

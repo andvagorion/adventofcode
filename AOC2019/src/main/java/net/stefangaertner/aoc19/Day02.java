@@ -1,7 +1,6 @@
 package net.stefangaertner.aoc19;
 
 import java.util.Arrays;
-import java.util.List;
 
 import net.stefangaertner.util.Advent;
 import net.stefangaertner.util.FileUtils;
@@ -16,8 +15,7 @@ public class Day02 {
 	}
 
 	public static long part1() {
-		List<String> lines = FileUtils.read("aoc19/002-data1");
-		String line = lines.get(0);
+		String line = FileUtils.readLine("aoc19/002-data1");
 
 		String[] parts = line.split(",");
 		Integer[] codes = Arrays.stream(parts)
@@ -42,9 +40,7 @@ public class Day02 {
 	}
 
 	public static long part2() {
-
-		List<String> lines = FileUtils.read("aoc19/002-data1");
-		String line = lines.get(0);
+		String line = FileUtils.readLine("aoc19/002-data1");
 
 		// determine what pair of inputs produces the output 19690720
 		// Each of the two input values will be between 0 and 99, inclusive.

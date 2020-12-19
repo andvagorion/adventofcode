@@ -22,8 +22,7 @@ public class Day17 {
 	}
 
 	static long part1() {
-		String code = FileUtils.read("aoc19/017-data")
-				.get(0);
+		String code = FileUtils.readLine("aoc19/017-data");
 		boolean debugPrint = false;
 
 		char[][] grid = parseGrid(code);
@@ -55,8 +54,7 @@ public class Day17 {
 	}
 
 	static long part2() {
-		String code = FileUtils.read("aoc19/017-data")
-				.get(0);
+		String code = FileUtils.readLine("aoc19/017-data");
 		boolean debugPrint = false;
 
 		// List<String> commands = getMovementCommands(code);
@@ -130,6 +128,7 @@ public class Day17 {
 		return p.getLastOutput();
 	}
 
+	@SuppressWarnings("unused")
 	private static List<String> getMovementCommands(String code) {
 
 		char[][] grid = parseGrid(code);

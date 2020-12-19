@@ -20,8 +20,7 @@ public class Day07 {
 	}
 
 	static long part1() {
-		List<String> lines = FileUtils.read("aoc19/007-data1");
-		String code = lines.get(0);
+		String code = FileUtils.readLine("aoc19/007-data1");
 
 		List<String> permutations = FileUtils.read("aoc19/007-permutations");
 
@@ -55,8 +54,7 @@ public class Day07 {
 	}
 
 	static long part2() {
-		List<String> lines = FileUtils.read("aoc19/007-data1");
-		String code = lines.get(0);
+		String code = FileUtils.readLine("aoc19/007-data1");
 
 		List<String> permutations = FileUtils.read("aoc19/007-permutations2");
 
