@@ -62,8 +62,8 @@ class RefactoringSafeGuard {
 				Arguments.of(new Execution<>(Day16::part1, 25788L)),
 				Arguments.of(new Execution<>(Day16::part2, 3902565915559L)),
 				
-				//Arguments.of(new Execution<>(Day17::part1, 368L)),
-				//Arguments.of(new Execution<>(Day17::part2, 2696L)),
+				Arguments.of(new Execution<>(Day17::part1, 368L)),
+				Arguments.of(new Execution<>(Day17::part2, 2696L)),
 				
 				Arguments.of(new Execution<>(Day19::part1, 291L)),
 				Arguments.of(new Execution<>(Day19::part2, 409L))

@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import net.stefangaertner.util.Advent;
 import net.stefangaertner.util.FileUtils;
 import net.stefangaertner.util.Point;
 import net.stefangaertner.util.Point3D;
@@ -12,13 +13,12 @@ import net.stefangaertner.util.Point4D;
 public class Day17 {
 
 	public static void main(String[] args) {
-		List<String> lines = FileUtils.read("aoc20/017");
-
-		System.out.println(String.format("Part 1: %d", part1(lines)));
-		System.out.println(String.format("Part 2: %d", part2(lines)));
+		Advent.print(1, part1());
+		Advent.print(2, part2());
 	}
 
-	static long part1(List<String> lines) {
+	static long part1() {
+		List<String> lines = FileUtils.read("aoc20/017");
 		Set<Point> active = new HashSet<>();
 
 		for (int y = 0; y < lines.size(); y++) {
@@ -37,7 +37,8 @@ public class Day17 {
 		return active.size();
 	}
 
-	static long part2(List<String> lines) {
+	static long part2() {
+		List<String> lines = FileUtils.read("aoc20/017");
 		Set<Point> active = new HashSet<>();
 
 		for (int y = 0; y < lines.size(); y++) {
@@ -88,7 +89,10 @@ public class Day17 {
 	}
 
 	private static int countActiveNeighbors(Point point, Set<Point> active) {
-		return (int) point.getNeighbors().stream().filter(p -> active.contains(p)).count();
+		return (int) point.getNeighbors()
+				.stream()
+				.filter(p -> active.contains(p))
+				.count();
 	}
 
 }
