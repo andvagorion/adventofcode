@@ -120,4 +120,9 @@ public class StringUtils {
 		return out;
 	}
 
+	public static Object reverse(String edge) {
+		return new StringBuilder(edge).reverse()
+				.toString();
+	}
+
 }
