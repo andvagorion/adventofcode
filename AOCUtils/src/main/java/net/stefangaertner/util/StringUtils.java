@@ -1,6 +1,9 @@
 package net.stefangaertner.util;
 
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -123,6 +126,53 @@ public class StringUtils {
 	public static Object reverse(String edge) {
 		return new StringBuilder(edge).reverse()
 				.toString();
+	}
+
+	public static <T> void printWithSelected(List<T> list, T selected) {
+		String out = list.stream()
+				.map(i -> {
+					if (Objects.equals(i, selected)) {
+						return "(" + i + ")";
+					}
+					return "" + i;
+				})
+				.collect(Collectors.joining(" "));
+		System.out.println(out);
+	}
+
+	public static <T extends Enum<?>> LinkedList<T> parseSymbols(String line, List<T> symbols) {
+		LinkedList<T> out = new LinkedList<>();
+		LinkedList<Character> characters = StringUtils.asList(line);
+
+		while (!characters.isEmpty()) {
+			final StringBuilder symbol = new StringBuilder();
+			while (!symbols.stream()
+					.anyMatch(e -> e.name()
+							.equals(symbol.toString()
+									.toUpperCase()))) {
+				symbol.append(characters.pop());
+			}
+
+			T obj = symbols.stream()
+					.filter(e -> e.name()
+							.equals(symbol.toString()
+									.toUpperCase()))
+					.findFirst()
+					.orElse(null);
+
+			if (obj != null) {
+				out.add(obj);
+			}
+
+		}
+
+		return out;
+	}
+
+	public static LinkedList<Character> asList(final String string) {
+		return string.chars()
+				.mapToObj(e -> (char) e)
+				.collect(Collectors.toCollection(() -> new LinkedList<>()));
 	}
 
 }
