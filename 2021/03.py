@@ -3,7 +3,7 @@ from functools import reduce
 
 add_as_int = lambda a, b: int(a) + int(b)
 
-lines = aoc.read_lines('003.txt')
+lines = aoc.read_lines('03.txt')
 
 line_len = len(lines[0])
 min = len(lines) / 2

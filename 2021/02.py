@@ -3,7 +3,7 @@ from functools import reduce
 
 pos = (0, 0)
 
-lines = aoc.read_lines('002.txt')
+lines = aoc.read_lines('02.txt')
 
 for line in lines:
     move = (0, 0)

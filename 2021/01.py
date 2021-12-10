@@ -1,6 +1,6 @@
 from aoc import aoc
 
-lines = [int(i) for i in aoc.read_lines('001.txt')]
+lines = [int(i) for i in aoc.read_lines('01.txt')]
 
 def one():
   count = 0

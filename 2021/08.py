@@ -1,23 +1,11 @@
 from aoc import aoc
 from functools import reduce
 
-lines = aoc.read_lines('008.txt')
+lines = aoc.read_lines('08.txt')
 
 def unique_patterns(line):
     first = line.split(' | ')[0]
     return [''.join(sorted(p)) for p in first.split()]
-
-def eval_possible_mapping(pattern):
-    possibilities = {}
-    if len(pattern) == 2:
-        for c in pattern: possibilities[c] = set(['c', 'f'])
-    elif len(pattern) == 3:
-        for c in pattern: possibilities[c] = set(['a', 'c', 'f'])
-    elif len(pattern) == 4:
-        for c in pattern: possibilities[c] = set(['b', 'c', 'd', 'f'])
-    else:
-        for c in pattern: possibilities[c] = set(['a', 'b', 'c', 'd', 'e', 'f'])
-    return possibilities
 
 def find_mapping(line):
     patterns = unique_patterns(line)
