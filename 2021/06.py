@@ -1,7 +1,7 @@
 from aoc import aoc
 from functools import reduce
 
-lines = aoc.read_lines('06.txt')
+lines = aoc.read_lines('data/06.txt')
 
 fish = [0 for i in range(9)]
 for i in lines[0].split(','): fish[int(i)] += 1

@@ -1,6 +1,6 @@
 from aoc import aoc
 
-lines = aoc.read_lines('05.txt')
+lines = aoc.read_lines('data/05.txt')
 
 def as_tuple(s):
     t = s.split(',')

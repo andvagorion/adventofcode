@@ -1,7 +1,7 @@
 from aoc import aoc
 from functools import reduce
 
-lines = aoc.read_lines('10.txt')
+lines = aoc.read_lines('data/10.txt')
 add = lambda a, b: a + b
 
 opening = ['(', '[', '{', '<']

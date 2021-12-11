@@ -1,7 +1,7 @@
 from aoc import aoc
 from aoc.point import point
 
-lines = aoc.read_lines('09.txt')
+lines = aoc.read_lines('data/09.txt')
 
 grid = [[int(c) for c in line] for line in lines]
 

@@ -1,7 +1,7 @@
 from aoc import aoc
 from functools import reduce
 
-lines = aoc.read_lines('04.txt')
+lines = aoc.read_lines('data/04.txt')
 
 bingo_numbers = [int(i) for i in lines[0].split(',')]
 

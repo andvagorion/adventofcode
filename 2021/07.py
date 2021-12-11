@@ -1,7 +1,7 @@
 from aoc import aoc
 from functools import reduce
 
-lines = aoc.read_lines('07.txt')
+lines = aoc.read_lines('data/07.txt')
 
 positions = [int(i) for i in lines[0].split(',')]
 max = reduce(lambda a, b: a if a > b else b, positions)

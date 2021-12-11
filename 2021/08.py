@@ -1,7 +1,7 @@
 from aoc import aoc
 from functools import reduce
 
-lines = aoc.read_lines('08.txt')
+lines = aoc.read_lines('data/08.txt')
 
 def unique_patterns(line):
     first = line.split(' | ')[0]

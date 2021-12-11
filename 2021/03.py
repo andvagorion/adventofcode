@@ -3,27 +3,28 @@ from functools import reduce
 
 add_as_int = lambda a, b: int(a) + int(b)
 
-lines = aoc.read_lines('03.txt')
+lines = aoc.read_lines('data/03.txt')
 
-line_len = len(lines[0])
-min = len(lines) / 2
-most_common = [0 for i in range(line_len)]
+def part1():
+    line_len = len(lines[0])
+    min = len(lines) / 2
+    most_common = [0 for i in range(line_len)]
 
-total = [0 for i in range(line_len)]
+    total = [0 for i in range(line_len)]
 
-for i in range(line_len):
-    vals = [line[i] for line in lines]
-    total[i] = reduce(add_as_int, vals)
+    for i in range(line_len):
+        vals = [line[i] for line in lines]
+        total[i] = reduce(add_as_int, vals)
 
-most_common = [1 if i > min else 0 for i in total]
-gamma = int(''.join([str(int) for int in most_common]), 2)
+    most_common = [1 if i > min else 0 for i in total]
+    gamma = int(''.join([str(int) for int in most_common]), 2)
 
-least_common = [1 if i == 0 else 0 for i in most_common]
-epsilon = int(''.join([str(int) for int in least_common]), 2)
+    least_common = [1 if i == 0 else 0 for i in most_common]
+    epsilon = int(''.join([str(int) for int in least_common]), 2)
 
-print(gamma * epsilon)
+    return gamma * epsilon
 
-def o2(lines):
+def o2():
     vals = [line for line in lines]
 
     i = 0
@@ -35,7 +36,7 @@ def o2(lines):
 
     return int(vals[0], 2)
 
-def co2(lines):
+def co2():
     vals = [line for line in lines]
 
     i = 0
@@ -47,4 +48,8 @@ def co2(lines):
 
     return int(vals[0], 2)
 
-print(o2(lines) * co2(lines))
+def part2():
+    return o2() * co2()
+
+print(part1())
+print(part2())
