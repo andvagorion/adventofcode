@@ -1,4 +1,4 @@
-package net.stefangaertner.util.graph;
+package net.stefangaertner.aoc19.util.graph;
 
 import java.util.ArrayList;
 import java.util.HashMap;

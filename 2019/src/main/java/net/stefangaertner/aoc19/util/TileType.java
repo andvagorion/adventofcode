@@ -1,4 +1,4 @@
-package net.stefangaertner.util;
+package net.stefangaertner.aoc19.util;
 
 public enum TileType {
 

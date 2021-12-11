@@ -1,4 +1,4 @@
-package net.stefangaertner.util;
+package net.stefangaertner.aoc19.util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -154,9 +154,7 @@ public class GridUtils {
 		pairs.add(Point2D.of(0, -1));
 		pairs.add(Point2D.of(0, 1));
 
-		return pairs.stream()
-				.map(p -> Point2D.of(p.x + center.x, p.y + center.y))
-				.collect(Collectors.toList());
+		return pairs.stream().map(p -> Point2D.of(p.x + center.x, p.y + center.y)).collect(Collectors.toList());
 	}
 
 	public static List<Point2D> findNeighbors(char[][] grid, Point2D center, Predicate<Character> predicate) {
