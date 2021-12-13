@@ -24,6 +24,10 @@ class grid(object):
         for row in self.matrix:
             print(row)
     
+    def print_condensed(self):
+        for row in self.matrix:
+            print(''.join([str(c) for c in row]))
+    
     def get(self, p: point) -> T:
         return self.matrix[p.y][p.x]
     
