@@ -76,7 +76,7 @@ class grid(object):
             self.matrix[p.y][p.x] = func(self.matrix[p.y][p.x])
         return len(points)
     
-    def find_all(self, predicate: Callable[[T], bool]) -> list[point]:
+    def find_all(self, predicate: Callable[[T], bool] = lambda _: True) -> list[point]:
         return [
             point(x,y)
             for x in range(self.width) 
