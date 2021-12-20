@@ -1,8 +1,13 @@
 from operator import add
+import png
 
 def read_lines(file):
   with open(file) as f:
     return f.read().splitlines()
+
+def write(file, content):
+  with open(file, 'w') as f:
+    f.write(content)
 
 def reverse(items):
   return items[::-1]

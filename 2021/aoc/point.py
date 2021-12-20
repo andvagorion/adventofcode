@@ -23,3 +23,7 @@ class point(object):
 
     def __eq__(self, other) -> bool:
         return type(other) == type(self) and self.x == other.x and self.y == other.y
+
+    def __lt__(self, other) -> bool:
+        if type(other) != type(self): return NotImplemented
+        return (self.x, self.y) < (other.x, other.y)
