@@ -1,4 +1,5 @@
 from aoc.point3 import point3
+from aoc.cuboid import cuboid
 
 class math3(object):
 
@@ -90,3 +91,13 @@ class math3(object):
                     matrices.add(pz)
         
         return matrices
+    
+    @staticmethod
+    def intersect_cuboid(src:cuboid, trg:cuboid):
+        if (
+            ((src.x0 <= trg.x0 <= src.x1) or (trg.x0 <= src.x0 <= trg.x1)) and
+            ((src.y0 <= trg.y0 <= src.y1) or (trg.y0 <= src.y0 <= trg.y1)) and
+            ((src.z0 <= trg.z0 <= src.z1) or (trg.z0 <= src.z0 <= trg.z1))
+        ): return True
+
+        return False
