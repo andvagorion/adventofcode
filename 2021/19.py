@@ -70,24 +70,6 @@ def eval_relative_pos(scanner_fixed, scanner_relative):
     
     return False
 
-def calc_real_position(scanners, id):
-    scanner = scanners[id]
-    
-    if scanner['ref'] == scanner['id']:
-        return scanner['beacons']
-    
-    fixed_beacons = scanner['beacons']
-    
-    # apply own rotation / transposition first
-    ref = id
-    while ref != 0:
-        diff = scanners[ref]['pos']
-        rot = scanners[ref]['rot']
-        fixed_beacons = [math3.rotate(beacon, rot).add(diff) for beacon in fixed_beacons]
-        ref = scanners[ref]['ref']
-    
-    return fixed_beacons
-
 def calculate_relative_positions(scanners):
     handled = [0]
     should_be_checked = [0]
@@ -109,13 +91,59 @@ def calculate_relative_positions(scanners):
             handled.append(i)
             should_be_checked.append(i)
 
-def count_all_beacons(scanners):
+def calc_real_scanner_position(scanner, id):
+    scanner = scanners[id]
+    fixed_scanner = point3(0, 0, 0)
+
+    if scanner['ref'] == scanner['id']:
+        return fixed_scanner
+
+    # apply own rotation / transposition first
+    ref = id
+    while ref != 0:
+        diff = scanners[ref]['pos']
+        rot = scanners[ref]['rot']
+        fixed_scanner = math3.rotate(fixed_scanner, rot).add(diff)
+        ref = scanners[ref]['ref']
+    
+    return fixed_scanner
+
+def calc_real_beacon_positions(scanners, id):
+    scanner = scanners[id]
+    
+    if scanner['ref'] == scanner['id']:
+        return scanner['beacons']
+    
+    fixed_beacons = scanner['beacons']
+    
+    # apply own rotation / transposition first
+    ref = id
+    while ref != 0:
+        diff = scanners[ref]['pos']
+        rot = scanners[ref]['rot']
+        fixed_beacons = [math3.rotate(beacon, rot).add(diff) for beacon in fixed_beacons]
+        ref = scanners[ref]['ref']
+    
+    return fixed_beacons
+
+def map_to_real_positions(scanners):
     all_beacons = set()
+    fixed_scanners = []
     for key in scanners:
-        fixed_beacons = calc_real_position(scanners, key)
+        fixed_scanner = calc_real_scanner_position(scanners, key)
+        fixed_beacons = calc_real_beacon_positions(scanners, key)
+        fixed_scanners.append(fixed_scanner)
         all_beacons.update(fixed_beacons)
-    return len(all_beacons)
+    return fixed_scanners, all_beacons
+
+def manhattan(s1:point3, s2:point3):
+    return abs(s1.x - s2.x) + abs(s1.y - s2.y) + abs(s1.z - s2.z)
 
 scanners = parse(DATA)
 calculate_relative_positions(scanners)
-print(count_all_beacons(scanners))
+scanners, beacons = map_to_real_positions(scanners)
+
+print(len(beacons))
+
+max_dist = max([manhattan(s1, s2) for s1 in scanners for s2 in scanners])
+print(max_dist)
