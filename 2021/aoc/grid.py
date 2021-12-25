@@ -1,3 +1,4 @@
+from __future__ import annotations
 from aoc.point import point
 from typing import Callable, TypeVar
 
@@ -89,3 +90,19 @@ class grid(object):
             for y in range(self.height):
                 if predicate(self.matrix[y][x]): return True
         return False
+    
+    def clone(self) -> grid:
+        cl = grid(self.width, self.height, self.get(point(0,0)))
+
+        for y in range(self.height):
+            for x in range (self.width):
+                cl.set(point(x, y), self.get(point(x, y)))
+        
+        return cl
+    
+    def __eq__(self:grid, other:grid) -> bool:
+        if type(self) != type(other): return False
+        if self.width != other.width or self.height != other.height: return False
+        for y in range(self.height):
+            if self.matrix[y] != other.matrix[y]: return False
+        return True
