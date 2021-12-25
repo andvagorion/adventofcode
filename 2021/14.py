@@ -1,44 +1,51 @@
 from aoc import aoc
-from aoc.point import point
-from aoc.grid import grid
-from itertools import count, permutations
 
-lines = aoc.read_lines('data/14.txt')
+SAMPLE = 'sample/14.txt'
+DATA = 'data/14.txt'
 
-rules = {}
-for line in lines[2:]:
-    parts = line.split(' -> ')
-    rules[parts[0]] = parts[1]
+def get_rules(lines):
+    rules = dict()
+    for line in lines[2:]:
+        parts = line.split(' -> ')
+        rules[parts[0]] = parts[1]
+    return rules
 
-def step(formula):
-    next_formula = []
-    for i in range(len(formula) - 1):
-        first = formula[i] 
-        second = formula[i+1]
-        produces = rules[first + second]
-        if i == 0: next_formula.append(first)
-        next_formula.append(produces)
-        next_formula.append(second)
-    return next_formula
+def step(formula, rules, counts):
+    next_formula = dict()
+    for key in formula:
+        middle = rules[key]
+        times = formula[key]
+        first = key[0] + middle
+        second = middle + key[1]
+        next_formula[first] = next_formula.get(first, 0) + times
+        next_formula[second] = next_formula.get(second, 0) + times
+        
+        counts[middle] = counts.get(middle, 0) + times
 
-def steps(formula, n):
-    for i in range(n):
-        formula = step(formula)
-    return formula
+    assert 2 * sum(formula.values()) == sum(next_formula.values())
+    assert sum(counts.values()) == sum(next_formula.values()) + 1
+    return next_formula, counts
 
-def counts(formula) -> dict:
-    el_count = {}
+def calc(filename, times):
+    lines = aoc.read_lines(filename)
 
-    elements = set(formula)
-    for element in elements:
-        el_count[element] = formula.count(element)
+    initial = [c for c in lines[0]]
+    formula = dict()
+    for i in range(len(initial) - 1):
+        key = initial[i] + initial[i + 1]
+        formula[key] = formula.get(key, 0) + 1
     
-    return el_count
+    counts = {key: initial.count(key) for key in set(initial)}
 
-def part1():
-    formula = [c for c in lines[0]]
-    formula = steps(formula, 10)
-    total = sorted([val for val in counts(formula).values()])
-    print(total[len(total) - 1] - total[0])
+    rules = get_rules(lines)
+    
+    for _ in range(times):
+        formula, counts = step(formula, rules, counts)
+    
+    mn = min(counts.values())
+    mx = max(counts.values())
 
-part1()
+    return mx - mn
+
+print(calc(DATA, 10))    
+print(calc(DATA, 40))
