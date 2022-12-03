@@ -32,7 +32,7 @@ console.log(part1)
 
 part2 = chunked(lines, 3)
   .map(arr => arr.map(to_chars).map(to_priority))
-	.map(all_include)
+  .map(all_include)
   .flat()
   .map(parse_int)
   .reduce(sum)
