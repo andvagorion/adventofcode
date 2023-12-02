@@ -25,3 +25,7 @@ exports.reverse_str = reverse_str;
 const parse_int = (str) => parseInt(str);
 
 exports.parse_int = parse_int;
+
+const only_digits = (line) => line.match(/\d+/g).map((s) => parseInt(s));
+
+exports.only_digits = only_digits;
