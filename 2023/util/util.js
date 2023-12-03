@@ -8,11 +8,17 @@ exports.load = load;
 
 const as_lines = (day) => {
     return load(day)
-        .split("\n")
+        .split(/\r?\n/)
         .filter((line) => line != "");
 };
 
 exports.as_lines = as_lines;
+
+const as_array = (day) => {
+    return as_lines(day).map(line => line.split(''))
+}
+
+exports.as_array = as_array
 
 const range = (len) => [...Array(len).keys()];
 
