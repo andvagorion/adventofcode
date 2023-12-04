@@ -35,3 +35,7 @@ exports.parse_int = parse_int;
 const only_digits = (line) => line.match(/\d+/g).map((s) => parseInt(s));
 
 exports.only_digits = only_digits;
+
+const sum = (a, b) => a + b
+
+exports.sum = sum
