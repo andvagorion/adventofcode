@@ -15,10 +15,10 @@ const as_lines = (day) => {
 exports.as_lines = as_lines;
 
 const as_array = (day) => {
-    return as_lines(day).map(line => line.split(''))
-}
+    return as_lines(day).map((line) => line.split(""));
+};
 
-exports.as_array = as_array
+exports.as_array = as_array;
 
 const range = (len) => [...Array(len).keys()];
 
@@ -36,6 +36,13 @@ const only_digits = (line) => line.match(/\d+/g).map((s) => parseInt(s));
 
 exports.only_digits = only_digits;
 
-const sum = (a, b) => a + b
+const sum = (a, b) => a + b;
 
-exports.sum = sum
+exports.sum = sum;
+
+const chunked = (arr, num) =>
+    range(arr.length)
+        .filter((i) => i % num == 0)
+        .map((i) => arr.slice(i, i + num));
+
+exports.chunked = chunked;
