@@ -14,11 +14,11 @@ const as_lines = (day) => {
 
 exports.as_lines = as_lines;
 
-const as_array = (day) => {
+const as_grid = (day) => {
     return as_lines(day).map((line) => line.split(""));
 };
 
-exports.as_array = as_array;
+exports.as_grid = as_grid;
 
 const range = (len) => [...Array(len).keys()];
 
@@ -46,3 +46,58 @@ const chunked = (arr, num) =>
         .map((i) => arr.slice(i, i + num));
 
 exports.chunked = chunked;
+
+const grid_find = (grid, el) => {
+    for (let y = 0; y < grid.length; y++) {
+        const row = grid[y];
+        for (let x = 0; x < row.length; x++) {
+            if (row[x] == el) return [x, y];
+        }
+    }
+};
+
+exports.grid_debug_print = (grid) => {
+    console.log(grid.map(row => row.join('')).join('\n'))
+}
+
+exports.grid_find = grid_find;
+
+const in_grid = (grid, [x, y]) => {
+    return y >= 0 && y < grid.length && x >= 0 && x < grid[0].length;
+};
+
+exports.in_grid = in_grid;
+
+const grid_neighbors_diag = (grid, pos) => {
+    const neighbors = [];
+
+    const x0 = pos[1];
+    const y0 = pos[0];
+    range(3)
+        .map((i) => y0 - 1 + i)
+        .forEach((y) => {
+            range(3)
+                .map((i) => x0 - 1 + i)
+                .forEach((x) => {
+                    const neighbor = [x, y];
+                    if ((y != pos[1] || x != pos[0]) && in_grid(grid, neighbor))
+                        neighbors.push(neighbor);
+                });
+        });
+
+    return neighbors;
+};
+
+exports.grid_neighbors_diag = grid_neighbors_diag;
+
+const grid_neighbors = (grid, pos) => {
+    const neighbors = [
+        [pos[0] - 1, pos[1]],
+        [pos[0] + 1, pos[1]],
+        [pos[0], pos[1] - 1],
+        [pos[0], pos[1] + 1],
+    ];
+    return neighbors.filter((n) => in_grid(grid, n));
+};
+
+exports.grid_neighbors = grid_neighbors;
