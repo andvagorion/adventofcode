@@ -57,8 +57,8 @@ const grid_find = (grid, el) => {
 };
 
 exports.grid_debug_print = (grid) => {
-    console.log(grid.map(row => row.join('')).join('\n'))
-}
+    console.log(grid.map((row) => row.join("")).join("\n"));
+};
 
 exports.grid_find = grid_find;
 
@@ -101,3 +101,31 @@ const grid_neighbors = (grid, pos) => {
 };
 
 exports.grid_neighbors = grid_neighbors;
+
+const greatest_common_divisor = (a, b) => {
+    return !b ? a : greatest_common_divisor(b, a % b);
+};
+
+exports.greatest_common_divisor = greatest_common_divisor;
+
+const least_common_multiple = (a, b) => {
+    return (a * b) / greatest_common_divisor(a, b);
+};
+
+exports.least_common_multiple = least_common_multiple;
+
+const least_common_multiple_many = (numbers) => {
+    numbers = numbers.map((n) => BigInt(n));
+
+    const num0 = numbers[0];
+    if (num0 == null) throw Error("num0 is null");
+    numbers.shift();
+
+    if (numbers.length == 2) {
+        return least_common_multiple(num0, numbers.shift());
+    }
+
+    return numbers.reduce((a, b) => least_common_multiple(a, b), num0);
+};
+
+exports.least_common_multiple_many = least_common_multiple_many;
