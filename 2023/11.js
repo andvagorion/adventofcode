@@ -29,17 +29,14 @@ const empty_between = (arr, c0, c1) => {
     return x;
 };
 
-const checked = [];
+const unchecked = [...galaxies];
 let sum1 = 0;
 let sum2 = 0;
 
-galaxies.forEach((galaxy) => {
-    galaxies.forEach((other) => {
-        const hash1 = `${galaxy[0]}-${galaxy[1]}-${other[0]}-${other[1]}`;
-        const hash2 = `${other[0]}-${other[1]}-${galaxy[0]}-${galaxy[1]}`;
+while (unchecked.length > 0) {
+    const galaxy = unchecked.shift();
 
-        if (checked.includes(hash1)) return;
-
+    unchecked.forEach((other) => {
         let dist = manhattan_distance(galaxy, other);
         sum1 += dist;
         sum2 += dist;
@@ -55,10 +52,8 @@ galaxies.forEach((galaxy) => {
             sum1 += cols.length;
             sum2 += cols.length * 999999;
         }
-
-        checked.push(hash1, hash2);
     });
-});
+}
 
 console.log(sum1);
 console.log(sum2);
