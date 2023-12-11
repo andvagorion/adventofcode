@@ -129,3 +129,9 @@ const least_common_multiple_many = (numbers) => {
 };
 
 exports.least_common_multiple_many = least_common_multiple_many;
+
+const manhattan_distance = ([x0, y0], [x1, y1]) => {
+    return Math.abs(x1 - x0) + Math.abs(y1 - y0);
+};
+
+exports.manhattan_distance = manhattan_distance;
