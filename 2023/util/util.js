@@ -6,10 +6,10 @@ const load = (day) => {
 
 exports.load = load;
 
-const as_lines = (day) => {
+const as_lines = (day, options = { keep_empty_lines: false }) => {
     return load(day)
         .split(/\r?\n/)
-        .filter((line) => line != "");
+        .filter((line) => (!options.keep_empty_lines ? line != "" : true));
 };
 
 exports.as_lines = as_lines;
@@ -46,6 +46,22 @@ const chunked = (arr, num) =>
         .map((i) => arr.slice(i, i + num));
 
 exports.chunked = chunked;
+
+const chunked_by_empty_lines = (arr) => {
+    const chunks = [];
+    let chunk = [];
+    arr.forEach((line) => {
+        if (line != "") {
+            chunk.push(line);
+        } else {
+            chunks.push(chunk);
+            chunk = [];
+        }
+    });
+    return chunks;
+};
+
+exports.chunked_by_empty_lines = chunked_by_empty_lines;
 
 const grid_find = (grid, el) => {
     for (let y = 0; y < grid.length; y++) {
