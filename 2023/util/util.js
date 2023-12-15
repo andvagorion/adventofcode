@@ -20,6 +20,13 @@ const as_grid = (day) => {
 
 exports.as_grid = as_grid;
 
+const transpose_grid = (grid) =>
+    range(grid[0].length).map((col) =>
+        range(grid.length).map((row) => grid[grid.length - 1 - row][col])
+    );
+
+exports.transpose_grid = transpose_grid;
+
 const range = (len) => [...Array(len).keys()];
 
 exports.range = range;
