@@ -5,6 +5,10 @@ const S = [0, 1];
 const W = [-1, 0];
 const E = [1, 0];
 
+const move = (pos, dir) => {
+    return [pos[0] + dir[0], pos[1] + dir[1]];
+};
+
 const turn_right = (dir) => {
     if (dir == N) return E;
     if (dir == E) return S;
@@ -62,15 +66,26 @@ const find_all = (grid, symbol) => {
     return locs;
 };
 
+const get_value = (grid, pos) => {
+    return grid[pos[1]]?.[pos[0]];
+};
+
+const pos_equals = (pos, other) => {
+    return pos[0] == other[0] && pos[1] == other[1];
+};
+
 module.exports = {
     N,
     S,
     W,
     E,
+    move,
     turn_right,
     find_first,
     debug_print,
     offgrid,
     iterate,
     find_all,
+    get_value,
+    pos_equals,
 };

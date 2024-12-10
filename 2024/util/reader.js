@@ -9,17 +9,24 @@ const read_lines = (path) => {
     return as_lines(data);
 };
 
-const read_array = (path) => {
+const IDENTITY = (el) => el;
+
+const read_array = (path, fn = IDENTITY) => {
     const lines = read_lines(path);
     const grid = [];
     for (let i = 0; i < lines.length; i++) {
         const a = lines[i].split("");
-        grid[i] = a;
+        grid[i] = a.map(fn);
     }
     return grid;
+};
+
+const read_array_int = (path) => {
+    return read_array(path, (el) => parseInt(el));
 };
 
 module.exports = {
     read_lines,
     read_array,
+    read_array_int,
 };
